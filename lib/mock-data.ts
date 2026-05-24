@@ -66,7 +66,7 @@ export const agents: Agent[] = [
     role: 'Orchestrator',
     description: 'Your AI team lead. Understands your goals and dispatches work to the right agents at the right time.',
     longDescription: 'Kiri is the intelligent core of your agent fleet. She learns your context, priorities, and communication style — then coordinates your team of agents to execute on what matters most.',
-    accent: '#8B5CF6',
+    accent: '#6CD9BA',
     status: 'active',
     sessions: 3,
     model: 'deepseek-v4-pro',
@@ -83,7 +83,7 @@ export const agents: Agent[] = [
     role: 'Research',
     description: 'Deep research on any topic. Delivers structured briefs, competitive analysis, and market intelligence.',
     longDescription: 'Compass is your dedicated research agent. Assign it a topic and receive a thorough, structured brief with sources. Ideal for market research, competitive analysis, and technical deep-dives.',
-    accent: '#06B6D4',
+    accent: '#4227F2',
     status: 'active',
     sessions: 4,
     model: 'kimi-k2.5',
@@ -117,7 +117,7 @@ export const agents: Agent[] = [
     role: 'Finance',
     description: 'Tracks, analyzes, and reports on your financial health. Weekly summaries, alerts, and forecasts.',
     longDescription: 'Atlas monitors your financial landscape and surfaces what matters. Weekly finance summaries, spending analysis, anomaly alerts, and forward-looking forecasts.',
-    accent: '#10B981',
+    accent: '#07D98C',
     status: 'idle',
     sessions: 0,
     model: 'deepseek-v4-flash',
@@ -134,7 +134,7 @@ export const agents: Agent[] = [
     role: 'Life & Calendar',
     description: 'Manages your schedule, reminders, and personal routines. Your AI chief of staff.',
     longDescription: 'Mira keeps your life organized. She manages calendars, sets reminders, tracks personal goals, and learns your routines to proactively surface what you need.',
-    accent: '#EC4899',
+    accent: '#F27EB4',
     status: 'idle',
     sessions: 0,
     model: 'deepseek-v4-flash',
@@ -151,7 +151,7 @@ export const agents: Agent[] = [
     role: 'SME Advisor',
     description: 'Deep domain expertise on demand. Expert-level answers across any field.',
     longDescription: 'Sage is your subject matter expert on demand. Ask about any domain and receive expert-level guidance. Becomes more valuable the more context it accumulates about your work.',
-    accent: '#6366F1',
+    accent: '#B775BF',
     status: 'idle',
     sessions: 0,
     model: 'deepseek-v4-pro',
@@ -168,7 +168,7 @@ export const agents: Agent[] = [
     role: 'Fitness & Habits',
     description: 'Builds and tracks fitness routines, habits, and personal goals.',
     longDescription: 'Coach designs personalized workout plans, monitors habits, provides accountability check-ins, and adjusts routines based on your progress.',
-    accent: '#EF4444',
+    accent: '#A60D61',
     status: 'offline',
     sessions: 0,
     model: 'deepseek-v4-flash',
@@ -185,7 +185,7 @@ export const agents: Agent[] = [
     role: 'Alerts & Monitoring',
     description: 'Watches what matters and surfaces the right information at the right time.',
     longDescription: 'Beacon is your always-on monitoring agent. It watches the sources you care about, filters noise, and delivers timely, actionable alerts.',
-    accent: '#F59E0B',
+    accent: '#1E18D9',
     status: 'idle',
     sessions: 0,
     model: 'deepseek-v4-flash',
@@ -217,8 +217,8 @@ export const outcomes: Outcome[] = [
 ];
 
 export const projects: Project[] = [
-  { id: 'proj-alpha', name: 'Project Alpha', description: 'Main product sprint', agentIds: ['kiri', 'compass', 'forge'], taskCount: 7, activeCount: 2, color: '#8B5CF6' },
-  { id: 'proj-finance', name: 'Finance Ops', description: 'Financial monitoring', agentIds: ['kiri', 'atlas', 'beacon'], taskCount: 3, activeCount: 0, color: '#10B981' },
+  { id: 'proj-alpha', name: 'Project Alpha', description: 'Main product sprint', agentIds: ['kiri', 'compass', 'forge'], taskCount: 7, activeCount: 2, color: '#6CD9BA' },
+  { id: 'proj-finance', name: 'Finance Ops', description: 'Financial monitoring', agentIds: ['kiri', 'atlas', 'beacon'], taskCount: 3, activeCount: 0, color: '#07D98C' },
 ];
 
 export const fleetStats = {

@@ -3,10 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --bg: #0A0A0F;
-  --surface: #111118;
-  --s1: #181825;
-  --border: #252530;
+  --bg: #13121A;
+  --surface: #1A1828;
+  --s1: #211E30;
+  --border: #241F35;
+  --kiri: #6CD9BA;
+  --warm: #F27EB4;
 }
 
 * {
@@ -32,12 +34,12 @@ html, body {
 /* Agent pulse rings */
 @keyframes pulse-ring {
   0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
 }
 
 @keyframes pulse-ring-2 {
   0% { transform: scale(1); opacity: 0.5; }
-  100% { transform: scale(1.7); opacity: 0; }
+  100% { transform: scale(1.3); opacity: 0; }
 }
 
 /* Particle traveling along rail */
@@ -66,9 +68,9 @@ html, body {
   animation: pulse-ring-2 2s ease-out 0.7s infinite;
 }
 
-/* Kiri gradient text */
+/* Kiri gradient text — teal leads */
 .kiri-text {
-  background: linear-gradient(135deg, #A78BFA, #818CF8, #6366F1);
+  background: linear-gradient(135deg, #6CD9BA, #4AC9A8, #07D98C);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

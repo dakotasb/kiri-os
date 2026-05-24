@@ -24,7 +24,7 @@ export default function DashboardPage() {
           </button>
           <button
             className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg transition-all duration-150"
-            style={{ background: '#8B5CF6', boxShadow: '0 0 16px rgba(139,92,246,0.35)' }}
+            style={{ background: '#6CD9BA', color: '#13121A', boxShadow: '0 0 16px rgba(108,217,186,0.35)' }}
           >
             <Plus size={12} strokeWidth={2.5} />
             Add Agent

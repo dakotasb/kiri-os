@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ArrowUp, Mic, Paperclip } from 'lucide-react';
 import { hexToRgba } from '@/lib/utils';
 
-const KIRI_COLOR = '#8B5CF6';
+const KIRI_COLOR = '#6CD9BA';
 
 const SUGGESTIONS = [
   'Summarize what my team did today',
@@ -38,7 +38,7 @@ export function ChatInput() {
       <div
         className="relative flex items-end gap-3 rounded-2xl border transition-all duration-200 px-4 py-3"
         style={{
-          background: focused ? 'rgba(139,92,246,0.04)' : '#111118',
+          background: focused ? 'rgba(108,217,186,0.05)' : '#1A1828',
           borderColor: focused ? hexToRgba(KIRI_COLOR, 0.4) : '#252530',
           boxShadow: focused ? `0 0 0 3px ${hexToRgba(KIRI_COLOR, 0.08)}, 0 0 30px ${hexToRgba(KIRI_COLOR, 0.08)}` : 'none',
         }}
@@ -75,7 +75,7 @@ export function ChatInput() {
             }}
             onClick={() => setValue('')}
           >
-            <ArrowUp size={15} strokeWidth={2.5} style={{ color: value ? '#fff' : '#4A4A6A' }} />
+            <ArrowUp size={15} strokeWidth={2.5} style={{ color: value ? '#13121A' : '#4A4A6A' }} />
           </button>
         </div>
       </div>

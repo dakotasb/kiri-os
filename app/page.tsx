@@ -24,7 +24,10 @@ export default function CompanionPage() {
             </div>
           )}
           {needsReview.length > 0 && (
-            <div className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-amber-500/25 bg-amber-500/08 text-amber-400">
+            <div
+              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border"
+              style={{ borderColor: 'rgba(242,126,180,0.3)', background: 'rgba(242,126,180,0.08)', color: '#F27EB4' }}
+            >
               <Clock size={11} />
               {needsReview.length} need{needsReview.length === 1 ? 's' : ''} your review
             </div>
@@ -43,7 +46,7 @@ export default function CompanionPage() {
             style={{
               width: 500,
               height: 200,
-              background: 'radial-gradient(ellipse at center, rgba(139,92,246,0.06) 0%, transparent 70%)',
+              background: 'radial-gradient(ellipse at center, rgba(108,217,186,0.07) 0%, transparent 70%)',
               transform: 'translateX(-50%)',
               left: '50%',
             }}
@@ -56,7 +59,7 @@ export default function CompanionPage() {
           {[
             { label: 'Completed today', value: '7 tasks', color: '#10B981' },
             { label: 'Memories added', value: '14 new', color: '#06B6D4' },
-            { label: 'Hours saved', value: '~4.2 hrs', color: '#8B5CF6' },
+            { label: 'Hours saved', value: '~4.2 hrs', color: '#6CD9BA' },
           ].map((stat, i) => (
             <div
               key={stat.label}
@@ -91,7 +94,7 @@ export default function CompanionPage() {
       {/* Fixed chat bar */}
       <div
         className="absolute bottom-0 left-0 right-0 glass border-t border-border"
-        style={{ background: 'rgba(10,10,15,0.85)' }}
+        style={{ background: 'rgba(19,18,26,0.90)' }}
       >
         <ChatInput />
       </div>

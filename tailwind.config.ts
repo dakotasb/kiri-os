@@ -8,24 +8,33 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: '#0A0A0F',
-        surface: '#111118',
-        's1': '#181825',
-        's2': '#1E1E2E',
+        bg: '#13121A',
+        surface: '#1A1828',
+        's1': '#211E30',
+        's2': '#2A2440',
         border: {
-          DEFAULT: '#252530',
-          hover: '#353548',
+          DEFAULT: '#241F35',
+          hover: '#332D4A',
         },
         tx: {
           DEFAULT: '#EEEEFA',
           2: '#7A7A9A',
           3: '#4A4A6A',
         },
+        // Hero: mint teal — leads everything
         kiri: {
-          DEFAULT: '#8B5CF6',
-          dim: '#8B5CF620',
-          glow: '#8B5CF640',
+          DEFAULT: '#6CD9BA',
+          dim: '#6CD9BA18',
+          glow: '#6CD9BA35',
         },
+        // Warmth: pink/magenta — companion, personal, review
+        warm: {
+          DEFAULT: '#F27EB4',
+          deep: '#A60D61',
+          dim: '#F27EB415',
+        },
+        // Depth: deep purple — surface tint only, never accent
+        deep: '#3F289D',
       },
       fontFamily: {
         sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
@@ -51,9 +60,10 @@ const config: Config = {
         shimmer: 'shimmer 1.5s infinite linear',
       },
       boxShadow: {
-        'card': '0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04)',
-        'card-hover': '0 4px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.07)',
-        'kiri': '0 0 30px rgba(139,92,246,0.2)',
+        'card': '0 1px 3px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
+        'card-hover': '0 4px 20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.07)',
+        'kiri': '0 0 30px rgba(108,217,186,0.2)',
+        'warm': '0 0 24px rgba(242,126,180,0.2)',
       },
     },
   },

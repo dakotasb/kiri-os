@@ -15,7 +15,7 @@ const NAV = [
   { href: '/dashboard',  icon: LayoutDashboard,  label: 'Fleet' },
   { href: '/catalog',    icon: Package,          label: 'Catalog' },
   { href: '/projects',   icon: Columns2,         label: 'Projects' },
-  { href: '/mempalace',  icon: Brain,            label: 'MemPalace' },
+  { href: '/mempalace',  icon: Brain,            label: 'Knowledge' },
 ];
 
 export function Sidebar() {
@@ -25,14 +25,14 @@ export function Sidebar() {
   const myAgents = agents.filter(a => ['kiri', 'compass', 'forge', 'atlas'].includes(a.id));
 
   return (
-    <aside className="flex flex-col w-[220px] shrink-0 h-full border-r border-border bg-[#0C0C14] overflow-hidden select-none">
+    <aside className="flex flex-col w-[220px] shrink-0 h-full border-r border-border bg-bg overflow-hidden select-none">
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-5 h-14 border-b border-border shrink-0">
         <div
           className="w-7 h-7 rounded-lg flex items-center justify-center"
           style={{
-            background: 'linear-gradient(135deg, #8B5CF6, #6366F1)',
-            boxShadow: '0 0 14px rgba(139,92,246,0.4)',
+            background: 'linear-gradient(135deg, #6CD9BA 0%, #3AC9A6 40%, #3F289D 100%)',
+            boxShadow: '0 0 14px rgba(108,217,186,0.45)',
           }}
         >
           <Sparkles size={14} strokeWidth={2} className="text-white" />
@@ -53,9 +53,10 @@ export function Sidebar() {
               href={href}
               className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-all duration-150 ${
                 active
-                  ? 'bg-kiri/10 text-kiri font-medium'
+                  ? 'font-medium'
                   : 'text-tx-2 hover:text-tx hover:bg-white/[0.04]'
               }`}
+              style={active ? { background: 'rgba(108,217,186,0.10)', color: '#6CD9BA' } : {}}
             >
               <Icon size={15} strokeWidth={active ? 2 : 1.6} />
               {label}
@@ -127,8 +128,8 @@ export function Sidebar() {
       {/* User */}
       <div className="mx-3 mb-3 p-2.5 rounded-xl border border-border bg-s1 flex items-center gap-2.5">
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-semibold"
-          style={{ background: 'linear-gradient(135deg, #8B5CF6, #6366F1)' }}
+          className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-[#13121A] text-xs font-semibold"
+          style={{ background: 'linear-gradient(135deg, #6CD9BA, #3F289D)' }}
         >
           D
         </div>

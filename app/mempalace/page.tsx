@@ -6,7 +6,7 @@ export default function MemPalacePage() {
     <div className="p-8 animate-fade-in">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold text-tx tracking-tight">MemPalace</h1>
+          <h1 className="text-xl font-semibold text-tx tracking-tight">Knowledge</h1>
           <p className="text-sm text-tx-3 mt-0.5">Institutional memory · What your agents know</p>
         </div>
         <span className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-cyan-500/25 bg-cyan-500/08 text-cyan-400 font-medium">

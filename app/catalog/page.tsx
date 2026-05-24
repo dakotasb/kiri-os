@@ -58,7 +58,7 @@ export default function CatalogPage() {
               className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150"
               style={
                 activeCategory === cat
-                  ? { background: 'rgba(139,92,246,0.12)', color: '#A78BFA', border: '1px solid rgba(139,92,246,0.3)' }
+                  ? { background: 'rgba(108,217,186,0.10)', color: '#6CD9BA', border: '1px solid rgba(108,217,186,0.3)' }
                   : { background: 'transparent', color: '#7A7A9A', border: '1px solid transparent' }
               }
             >
