@@ -17,7 +17,7 @@ export function AgentRail() {
       <div className="flex items-center gap-10">
         {myAgents.map((agent, i) => (
           <div key={agent.id} className="flex items-center gap-10">
-            <AgentIcon agent={agent} size="xl" showName showRole showPulse />
+            <AgentIcon agent={agent} size="xl" showName showRole showPulse orb />
 
             {/* Connector between agents */}
             {i < myAgents.length - 1 && (

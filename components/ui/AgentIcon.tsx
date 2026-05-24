@@ -26,6 +26,8 @@ interface AgentIconProps {
   showName?: boolean;
   showRole?: boolean;
   showPulse?: boolean;
+  /** Orb mode: icon moves to a small badge at bottom-right; main circle is empty */
+  orb?: boolean;
   className?: string;
 }
 
@@ -35,6 +37,7 @@ export function AgentIcon({
   showName = false,
   showRole = false,
   showPulse = true,
+  orb = false,
   className = '',
 }: AgentIconProps) {
   const cfg = SIZES[size];
@@ -68,7 +71,7 @@ export function AgentIcon({
           </>
         )}
 
-        {/* Icon container */}
+        {/* Orb circle */}
         <div
           className="rounded-full flex items-center justify-center transition-all duration-300"
           style={{
@@ -79,20 +82,48 @@ export function AgentIcon({
             boxShadow: glowShadow,
           }}
         >
-          <Icon size={cfg.icon} strokeWidth={1.6} style={{ color }} />
+          {/* Icon lives inside the orb in default mode */}
+          {!orb && <Icon size={cfg.icon} strokeWidth={1.6} style={{ color }} />}
         </div>
 
-        {/* Status dot */}
-        <span
-          className="absolute rounded-full border-2 border-bg"
-          style={{
-            width: cfg.dot,
-            height: cfg.dot,
-            bottom: cfg.dotPos,
-            right: cfg.dotPos,
-            background: isActive ? '#10B981' : isOffline ? 'var(--status-dot-offline)' : 'var(--tx3)',
-          }}
-        />
+        {/* Default mode: small status dot at bottom-right */}
+        {!orb && (
+          <span
+            className="absolute rounded-full border-2 border-bg"
+            style={{
+              width: cfg.dot,
+              height: cfg.dot,
+              bottom: cfg.dotPos,
+              right: cfg.dotPos,
+              background: isActive ? '#10B981' : isOffline ? 'var(--status-dot-offline)' : 'var(--tx3)',
+            }}
+          />
+        )}
+
+        {/* Orb mode: icon badge at bottom-right, coloured = online, muted = offline */}
+        {orb && (() => {
+          const bSize  = Math.round(cfg.wrap * 0.30);
+          const bR     = Math.round(bSize * 0.30);
+          const offset = -Math.round(bSize * 0.18);
+          return (
+            <div
+              className="absolute flex items-center justify-center"
+              style={{
+                width: bSize, height: bSize, borderRadius: bR,
+                bottom: offset, right: offset,
+                background: isOffline ? 'var(--ov-xs)' : hexToRgba(agent.accent, 0.15),
+                border: `1.5px solid ${isOffline ? 'var(--ov-sm)' : hexToRgba(agent.accent, 0.55)}`,
+                boxShadow: isActive ? `0 0 8px ${hexToRgba(agent.accent, 0.5)}` : 'none',
+              }}
+            >
+              <Icon
+                size={Math.round(bSize * 0.52)}
+                strokeWidth={1.8}
+                style={{ color: isOffline ? 'var(--tx3)' : agent.accent }}
+              />
+            </div>
+          );
+        })()}
       </div>
 
       {showName && (
