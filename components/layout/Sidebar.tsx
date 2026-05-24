@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { agents, projects } from '@/lib/mock-data';
 import { AgentIcon } from '@/components/ui/AgentIcon';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { hexToRgba } from '@/lib/utils';
 
 const NAV = [
@@ -56,7 +57,7 @@ export function Sidebar() {
                   ? 'font-medium'
                   : 'text-tx-2 hover:text-tx hover:bg-white/[0.04]'
               }`}
-              style={active ? { background: 'rgba(108,217,186,0.10)', color: '#6CD9BA' } : {}}
+              style={active ? { background: 'rgb(var(--t-kiri) / 0.10)', color: 'var(--kiri)' } : {}}
             >
               <Icon size={15} strokeWidth={active ? 2 : 1.6} />
               {label}
@@ -77,10 +78,10 @@ export function Sidebar() {
             <div key={agent.id} className="flex items-center gap-2.5 py-1 px-1 rounded-md hover:bg-white/[0.03] cursor-pointer transition-colors">
               <AgentIcon agent={agent} size="xs" showPulse={agent.status === 'active'} />
               <div className="min-w-0">
-                <p className="text-xs font-medium truncate" style={{ color: agent.status === 'offline' ? '#4A4A6A' : '#EEEEFA' }}>
+                <p className="text-xs font-medium truncate" style={{ color: agent.status === 'offline' ? 'var(--tx3)' : 'var(--tx)' }}>
                   {agent.name}
                 </p>
-                <p className="text-[10px] truncate" style={{ color: '#4A4A6A' }}>
+                <p className="text-[10px] truncate" style={{ color: 'var(--tx3)' }}>
                   {agent.status === 'active' ? `${agent.sessions} sessions` : agent.status}
                 </p>
               </div>
@@ -114,15 +115,16 @@ export function Sidebar() {
       {/* Spacer */}
       <div className="flex-1" />
 
-      {/* Settings */}
-      <div className="px-2 pb-2">
+      {/* Settings + theme toggle */}
+      <div className="px-2 pb-2 flex items-center gap-1">
         <Link
           href="/settings"
-          className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-tx-2 hover:text-tx hover:bg-white/[0.04] transition-all duration-150"
+          className="flex flex-1 items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-tx-2 hover:text-tx hover:bg-white/[0.04] transition-all duration-150"
         >
           <Settings size={15} strokeWidth={1.6} />
           Settings
         </Link>
+        <ThemeToggle />
       </div>
 
       {/* User */}

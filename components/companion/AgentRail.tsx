@@ -25,7 +25,7 @@ export function AgentRail() {
                 {/* Base line */}
                 <div
                   className="absolute inset-0 rounded-full"
-                  style={{ background: 'rgba(255,255,255,0.07)' }}
+                  style={{ background: 'var(--connector-line)' }}
                 />
 
                 {/* Active handoff particle */}

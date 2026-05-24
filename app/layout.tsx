@@ -27,6 +27,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      {/* Blocking script — runs before paint to avoid dark→light flash */}
+      <head>
+        <script dangerouslySetInnerHTML={{ __html:
+          `(function(){try{var t=localStorage.getItem('kiri-theme');` +
+          `if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();`
+        }} />
+      </head>
       <body className="font-sans antialiased">
         <div className="flex h-screen bg-bg overflow-hidden">
           <Sidebar />

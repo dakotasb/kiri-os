@@ -94,7 +94,7 @@ export default function CompanionPage() {
       {/* Fixed chat bar */}
       <div
         className="absolute bottom-0 left-0 right-0 glass border-t border-border"
-        style={{ background: 'rgba(19,18,26,0.90)' }}
+        style={{ background: 'var(--chat-bar-bg)' }}
       >
         <ChatInput />
       </div>

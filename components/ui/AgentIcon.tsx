@@ -42,10 +42,10 @@ export function AgentIcon({
   const isActive = agent.status === 'active';
   const isOffline = agent.status === 'offline';
 
-  const color = isOffline ? '#4A4A6A' : agent.accent;
-  const borderColor = isOffline ? 'rgba(255,255,255,0.05)' : hexToRgba(agent.accent, 0.28);
+  const color = isOffline ? 'var(--tx3)' : agent.accent;
+  const borderColor = isOffline ? 'var(--ov-sm)' : hexToRgba(agent.accent, 0.28);
   const bgColor = isOffline
-    ? 'rgba(255,255,255,0.03)'
+    ? 'var(--ov-xs)'
     : `radial-gradient(circle at 35% 35%, ${hexToRgba(agent.accent, 0.22)}, ${hexToRgba(agent.accent, 0.05)})`;
   const glowShadow = isActive
     ? `0 0 22px ${hexToRgba(agent.accent, 0.28)}, 0 0 44px ${hexToRgba(agent.accent, 0.10)}`
@@ -90,18 +90,18 @@ export function AgentIcon({
             height: cfg.dot,
             bottom: cfg.dotPos,
             right: cfg.dotPos,
-            background: isActive ? '#10B981' : isOffline ? '#252530' : '#4A4A6A',
+            background: isActive ? '#10B981' : isOffline ? 'var(--status-dot-offline)' : 'var(--tx3)',
           }}
         />
       </div>
 
       {showName && (
         <div className="text-center leading-tight">
-          <p className="text-xs font-medium" style={{ color: isOffline ? '#4A4A6A' : '#EEEEFA' }}>
+          <p className="text-xs font-medium" style={{ color: isOffline ? 'var(--tx3)' : 'var(--tx)' }}>
             {agent.name}
           </p>
           {showRole && (
-            <p className="text-[10px] mt-0.5" style={{ color: '#4A4A6A' }}>
+            <p className="text-[10px] mt-0.5" style={{ color: 'var(--tx3)' }}>
               {agent.role}
             </p>
           )}

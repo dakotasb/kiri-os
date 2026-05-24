@@ -2,27 +2,120 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════
+   THEME VARIABLES
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Dark (default) ── */
 :root {
-  --bg: #13121A;
+  /* Space-separated RGB triplets — lets Tailwind opacity modifiers work:
+     e.g. bg-kiri/10 → rgb(var(--t-kiri) / 0.1)                        */
+  --t-bg:           19  18  26;
+  --t-surface:      26  24  40;
+  --t-s1:           33  30  48;
+  --t-s2:           42  36  64;
+  --t-border:       36  31  53;
+  --t-border-hover: 51  45  74;
+  --t-tx:          238 238 250;
+  --t-tx2:         122 122 154;
+  --t-tx3:          74  74 106;
+  --t-kiri:        108 217 186;
+  --t-warm:        242 126 180;
+  --t-warm-deep:   166  13  97;
+  --t-deep:         63  40 157;
+
+  /* Full hex / rgba — used by body bg, CSS rules, and inline styles */
+  --bg:      #13121A;
   --surface: #1A1828;
-  --s1: #211E30;
-  --border: #241F35;
-  --kiri: #6CD9BA;
-  --warm: #F27EB4;
+  --s1:      #211E30;
+  --border:  #241F35;
+  --tx:      #EEEEFA;
+  --tx2:     #7A7A9A;
+  --tx3:     #4A4A6A;
+  --kiri:    #6CD9BA;
+  --warm:    #F27EB4;
+
+  /* Adaptive overlay tints (white in dark, black in light) */
+  --ov-xs: rgba(255,255,255,0.03);
+  --ov-sm: rgba(255,255,255,0.05);
+  --ov-md: rgba(255,255,255,0.08);
+
+  /* Component-specific semantic vars */
+  --chat-bar-bg:        rgba(19,18,26,0.90);
+  --input-bg:           #1A1828;
+  --input-border:       #252530;
+  --status-dot-offline: #252530;
+  --badge-idle-bg:      rgba(255,255,255,0.04);
+  --badge-idle-border:  rgba(255,255,255,0.07);
+  --badge-off-bg:       rgba(255,255,255,0.03);
+  --badge-off-border:   rgba(255,255,255,0.05);
+  --connector-line:     rgba(255,255,255,0.07);
+  --tag-border:         rgba(255,255,255,0.06);
+  --tag-bg:             rgba(255,255,255,0.03);
+  --progress-track:     rgba(255,255,255,0.06);
+  --shadow-card:        0 1px 3px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+  --shadow-card-hover:  0 4px 20px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* ── Light (ivory) ── */
+[data-theme="light"] {
+  --t-bg:           250 248 244;
+  --t-surface:      255 255 255;
+  --t-s1:           244 240 232;
+  --t-s2:           237 232 220;
+  --t-border:       228 221 208;
+  --t-border-hover: 212 202 184;
+  --t-tx:            26  24  40;
+  --t-tx2:           92  87 117;
+  --t-tx3:          153 148 168;
+  --t-kiri:          24 184 147;
+  --t-warm:         212  94 143;
+  --t-warm-deep:    166  13  97;
+  --t-deep:          63  40 157;
+
+  --bg:      #FAF8F4;
+  --surface: #FFFFFF;
+  --s1:      #F4F0E8;
+  --border:  #E4DDD0;
+  --tx:      #1A1828;
+  --tx2:     #5C5775;
+  --tx3:     #9994A8;
+  --kiri:    #18B893;
+  --warm:    #D45E8F;
+
+  --ov-xs: rgba(0,0,0,0.03);
+  --ov-sm: rgba(0,0,0,0.05);
+  --ov-md: rgba(0,0,0,0.06);
+
+  --chat-bar-bg:        rgba(250,248,244,0.92);
+  --input-bg:           #FFFFFF;
+  --input-border:       #E4DDD0;
+  --status-dot-offline: #D4CFC6;
+  --badge-idle-bg:      rgba(0,0,0,0.04);
+  --badge-idle-border:  rgba(0,0,0,0.07);
+  --badge-off-bg:       rgba(0,0,0,0.03);
+  --badge-off-border:   rgba(0,0,0,0.07);
+  --connector-line:     rgba(0,0,0,0.08);
+  --tag-border:         rgba(0,0,0,0.08);
+  --tag-bg:             rgba(0,0,0,0.03);
+  --progress-track:     rgba(0,0,0,0.06);
+  --shadow-card:        0 1px 4px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.06);
+  --shadow-card-hover:  0 4px 16px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.08);
 }
+
+/* ═══════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   height: 100%;
   background: var(--bg);
-  color: #EEEEFA;
+  color: var(--tx);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background 0.2s ease, color 0.15s ease;
 }
 
 /* Scrollbar */
@@ -31,46 +124,58 @@ html, body {
 ::-webkit-scrollbar-thumb { background: #353548; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #454560; }
 
-/* Agent pulse rings */
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #C8C2B8; }
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #A89E94; }
+
+/* ═══════════════════════════════════════════════════════
+   KEYFRAMES
+   ═══════════════════════════════════════════════════════ */
+
 @keyframes pulse-ring {
-  0% { transform: scale(1); opacity: 0.8; }
+  0%   { transform: scale(1);   opacity: 0.8; }
   100% { transform: scale(1.5); opacity: 0; }
 }
 
 @keyframes pulse-ring-2 {
-  0% { transform: scale(1); opacity: 0.5; }
+  0%   { transform: scale(1);   opacity: 0.5; }
   100% { transform: scale(1.3); opacity: 0; }
 }
 
-/* Particle traveling along rail */
 @keyframes particle-travel {
-  0%   { left: 0; opacity: 0; }
+  0%   { left: 0;                  opacity: 0; }
   8%   { opacity: 1; }
   92%  { opacity: 1; }
-  100% { left: calc(100% - 6px); opacity: 0; }
+  100% { left: calc(100% - 6px);   opacity: 0; }
 }
 
-/* Card entrance */
 @keyframes card-in {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.animate-particle {
-  animation: particle-travel 1.6s ease-in-out infinite;
+@keyframes progress-fill {
+  from { width: 0%; }
+  to   { width: var(--progress); }
 }
 
-.animate-pulse-ring {
-  animation: pulse-ring 2s ease-out infinite;
-}
+.animate-particle    { animation: particle-travel 1.6s ease-in-out infinite; }
+.animate-pulse-ring  { animation: pulse-ring 2s ease-out infinite; }
+.animate-pulse-ring-2 { animation: pulse-ring-2 2s ease-out 0.7s infinite; }
+.progress-animated   { animation: progress-fill 1s ease-out both; }
 
-.animate-pulse-ring-2 {
-  animation: pulse-ring-2 2s ease-out 0.7s infinite;
-}
+/* ═══════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════ */
 
-/* Kiri gradient text — teal leads */
+/* Teal gradient text */
 .kiri-text {
   background: linear-gradient(135deg, #6CD9BA, #4AC9A8, #07D98C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+[data-theme="light"] .kiri-text {
+  background: linear-gradient(135deg, #18B893, #0FA07A, #07C47C);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -82,12 +187,25 @@ html, body {
   -webkit-backdrop-filter: blur(16px) saturate(180%);
 }
 
-/* Progress bar animated fill */
-@keyframes progress-fill {
-  from { width: 0%; }
-  to   { width: var(--progress); }
+/* ═══════════════════════════════════════════════════════
+   LIGHT-MODE OVERRIDES FOR TAILWIND WHITE-ALPHA UTILITIES
+   These classes become invisible on ivory without this fix.
+   ═══════════════════════════════════════════════════════ */
+
+/* Static white-alpha backgrounds */
+[data-theme="light"] .bg-white\/\[0\.03\],
+[data-theme="light"] .bg-white\/\[0\.04\],
+[data-theme="light"] .bg-white\/\[0\.05\],
+[data-theme="light"] .bg-white\/\[0\.06\],
+[data-theme="light"] .bg-white\/\[0\.07\],
+[data-theme="light"] .bg-white\/\[0\.08\] {
+  background-color: var(--ov-xs);
 }
 
-.progress-animated {
-  animation: progress-fill 1s ease-out both;
+/* Hover white-alpha backgrounds */
+[data-theme="light"] .hover\:bg-white\/\[0\.03\]:hover,
+[data-theme="light"] .hover\:bg-white\/\[0\.04\]:hover,
+[data-theme="light"] .hover\:bg-white\/\[0\.05\]:hover,
+[data-theme="light"] .hover\:bg-white\/\[0\.06\]:hover {
+  background-color: var(--ov-sm);
 }

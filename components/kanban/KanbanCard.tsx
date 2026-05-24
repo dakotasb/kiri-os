@@ -47,7 +47,7 @@ export function KanbanCard({ task, delay = 0 }: KanbanCardProps) {
             <span
               key={tag}
               className="text-[10px] px-1.5 py-0.5 rounded border"
-              style={{ color: '#5A5A7A', borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.03)' }}
+              style={{ color: 'var(--tx2)', borderColor: 'var(--tag-border)', background: 'var(--tag-bg)' }}
             >
               {tag}
             </span>
@@ -58,7 +58,7 @@ export function KanbanCard({ task, delay = 0 }: KanbanCardProps) {
       {/* Progress bar (in-progress only) */}
       {task.status === 'in-progress' && task.progress !== undefined && agent && (
         <div className="mb-2.5">
-          <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
+          <div className="h-1 rounded-full overflow-hidden" style={{ background: 'var(--progress-track)' }}>
             <div
               className="h-full rounded-full"
               style={{
