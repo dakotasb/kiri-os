@@ -9,6 +9,7 @@ import {
 import { agents, projects } from '@/lib/mock-data';
 import { AgentIcon } from '@/components/ui/AgentIcon';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { hexToRgba } from '@/lib/utils';
 
 const NAV = [
   { href: '/',           icon: Sparkles,        label: 'Home' },
@@ -84,6 +85,12 @@ export function Sidebar() {
                   {agent.status === 'active' ? `${agent.sessions} sessions` : agent.status}
                 </p>
               </div>
+              {agent.status === 'active' && (
+                <span
+                  className="ml-auto w-1.5 h-1.5 rounded-full shrink-0"
+                  style={{ background: agent.accent, boxShadow: `0 0 6px ${hexToRgba(agent.accent, 0.8)}` }}
+                />
+              )}
             </div>
           ))}
         </div>
