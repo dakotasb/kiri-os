@@ -28,16 +28,18 @@ export function AgentRail() {
                   style={{ background: 'var(--connector-line)' }}
                 />
 
-                {/* Active handoff particle */}
+                {/* Active handoff: glow sweeps left → right */}
                 {currentHandoff.active &&
                   agent.id === currentHandoff.fromAgentId && (
-                    <span
-                      className="absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full animate-particle"
-                      style={{
-                        background: from?.accent ?? '#8B5CF6',
-                        boxShadow: `0 0 6px ${hexToRgba(from?.accent ?? '#8B5CF6', 0.9)}`,
-                      }}
-                    />
+                    <div className="absolute inset-0 rounded-full overflow-hidden">
+                      <span
+                        className="absolute inset-y-0 left-0 w-1/2 animate-line-sweep"
+                        style={{
+                          background: `linear-gradient(90deg, transparent, ${hexToRgba(from?.accent ?? '#6CD9BA', 1)} 50%, transparent)`,
+                          boxShadow: `0 0 6px ${hexToRgba(from?.accent ?? '#6CD9BA', 0.8)}`,
+                        }}
+                      />
+                    </div>
                   )}
               </div>
             )}
