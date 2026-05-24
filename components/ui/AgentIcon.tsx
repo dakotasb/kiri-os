@@ -109,10 +109,10 @@ export function AgentIcon({
             <div
               className="absolute flex items-center justify-center"
               style={{
-                width: bSize, height: bSize, borderRadius: bR,
+                width: bSize, height: bSize, borderRadius: '50%',
                 bottom: offset, right: offset,
-                background: isOffline ? 'var(--ov-xs)' : hexToRgba(agent.accent, 0.15),
-                border: `1.5px solid ${isOffline ? 'var(--ov-sm)' : hexToRgba(agent.accent, 0.55)}`,
+                background: 'var(--s1)',
+                border: `2px solid ${isOffline ? 'var(--border)' : hexToRgba(agent.accent, 0.7)}`,
                 boxShadow: isActive ? `0 0 8px ${hexToRgba(agent.accent, 0.5)}` : 'none',
               }}
             >
