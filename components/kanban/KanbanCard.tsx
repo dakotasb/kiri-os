@@ -22,11 +22,11 @@ export function KanbanCard({ task, delay = 0 }: KanbanCardProps) {
 
   return (
     <div
-      className="rounded-xl border bg-surface p-3.5 cursor-pointer transition-all duration-200 group hover:bg-s1 animate-fade-up"
+      className="rounded-xl border bg-surface p-3.5 cursor-pointer transition-all duration-200 group hover:bg-s1 shadow-card hover:shadow-card-hover animate-fade-up"
       style={{
         animationDelay: `${delay}ms`,
-        borderColor: isReview ? 'rgba(242,126,180,0.45)' : '#241F35',
-        boxShadow: isReview ? '0 0 20px rgba(242,126,180,0.12), 0 0 0 1px rgba(242,126,180,0.2)' : 'none',
+        borderColor: isReview ? 'rgba(242,126,180,0.45)' : 'var(--border)',
+        boxShadow: isReview ? '0 0 20px rgba(242,126,180,0.12), 0 0 0 1px rgba(242,126,180,0.2)' : undefined,
       }}
     >
       {/* Human review banner */}
