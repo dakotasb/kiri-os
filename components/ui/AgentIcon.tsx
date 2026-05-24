@@ -12,12 +12,13 @@ const ICON_MAP: Record<string, LucideIcon> = {
   BookOpen, Target, BellRing,
 };
 
+// badge = outer size, icon = lucide icon size, r = border-radius (rounded-square)
 const SIZES = {
-  xs: { wrap: 28, icon: 12, dot: 7, dotPos: '-1px' },
-  sm: { wrap: 36, icon: 14, dot: 8, dotPos: '-1px' },
-  md: { wrap: 44, icon: 18, dot: 10, dotPos: '-2px' },
-  lg: { wrap: 60, icon: 24, dot: 12, dotPos: '-2px' },
-  xl: { wrap: 80, icon: 32, dot: 14, dotPos: '-3px' },
+  xs: { badge: 24, icon: 11, r: 6  },
+  sm: { badge: 30, icon: 13, r: 7  },
+  md: { badge: 38, icon: 16, r: 9  },
+  lg: { badge: 48, icon: 20, r: 11 },
+  xl: { badge: 58, icon: 25, r: 13 },
 };
 
 interface AgentIconProps {
@@ -39,65 +40,70 @@ export function AgentIcon({
 }: AgentIconProps) {
   const cfg = SIZES[size];
   const Icon = ICON_MAP[agent.icon] ?? Sparkles;
-  const isActive = agent.status === 'active';
+  const isActive  = agent.status === 'active';
   const isOffline = agent.status === 'offline';
 
-  const color = isOffline ? 'var(--tx3)' : agent.accent;
-  const borderColor = isOffline ? 'var(--ov-sm)' : hexToRgba(agent.accent, 0.28);
-  const bgColor = isOffline
+  // Colour logic — offline goes muted, everything else uses agent accent
+  const iconColor  = isOffline ? 'var(--tx3)' : agent.accent;
+  const badgeBg    = isOffline
     ? 'var(--ov-xs)'
-    : `radial-gradient(circle at 35% 35%, ${hexToRgba(agent.accent, 0.22)}, ${hexToRgba(agent.accent, 0.05)})`;
-  const glowShadow = isActive
-    ? `0 0 22px ${hexToRgba(agent.accent, 0.28)}, 0 0 44px ${hexToRgba(agent.accent, 0.10)}`
+    : hexToRgba(agent.accent, 0.13);
+  const badgeBorder = isOffline
+    ? 'var(--ov-sm)'
+    : hexToRgba(agent.accent, isActive ? 0.42 : 0.25);
+  const badgeGlow  = isActive
+    ? `0 0 14px ${hexToRgba(agent.accent, 0.32)}, 0 0 28px ${hexToRgba(agent.accent, 0.12)}`
     : 'none';
 
   return (
     <div className={`flex flex-col items-center gap-2 ${className}`}>
-      <div className="relative flex items-center justify-center" style={{ width: cfg.wrap, height: cfg.wrap }}>
-        {/* Pulse rings */}
+      {/* Badge + pulse wrapper — sized to badge so rings hug it */}
+      <div
+        className="relative flex items-center justify-center shrink-0"
+        style={{ width: cfg.badge, height: cfg.badge }}
+      >
+        {/* Pulse rings — match badge shape */}
         {isActive && showPulse && (
           <>
             <span
-              className="absolute inset-0 rounded-full animate-pulse-ring pointer-events-none"
-              style={{ border: `1px solid ${hexToRgba(agent.accent, 0.6)}` }}
+              className="absolute inset-0 animate-pulse-ring pointer-events-none"
+              style={{
+                borderRadius: cfg.r,
+                border: `1px solid ${hexToRgba(agent.accent, 0.55)}`,
+              }}
             />
             <span
-              className="absolute inset-0 rounded-full animate-pulse-ring-2 pointer-events-none"
-              style={{ border: `1px solid ${hexToRgba(agent.accent, 0.4)}` }}
+              className="absolute inset-0 animate-pulse-ring-2 pointer-events-none"
+              style={{
+                borderRadius: cfg.r,
+                border: `1px solid ${hexToRgba(agent.accent, 0.30)}`,
+              }}
             />
           </>
         )}
 
-        {/* Icon container */}
+        {/* The badge — icon + status expressed through colour/glow */}
         <div
-          className="rounded-full flex items-center justify-center transition-all duration-300"
+          className="flex items-center justify-center transition-all duration-300"
           style={{
-            width: cfg.wrap,
-            height: cfg.wrap,
-            background: bgColor,
-            border: `1px solid ${borderColor}`,
-            boxShadow: glowShadow,
+            width: cfg.badge,
+            height: cfg.badge,
+            borderRadius: cfg.r,
+            background: badgeBg,
+            border: `1.5px solid ${badgeBorder}`,
+            boxShadow: badgeGlow,
           }}
         >
-          <Icon size={cfg.icon} strokeWidth={1.6} style={{ color }} />
+          <Icon size={cfg.icon} strokeWidth={1.8} style={{ color: iconColor }} />
         </div>
-
-        {/* Status dot */}
-        <span
-          className="absolute rounded-full border-2 border-bg"
-          style={{
-            width: cfg.dot,
-            height: cfg.dot,
-            bottom: cfg.dotPos,
-            right: cfg.dotPos,
-            background: isActive ? '#10B981' : isOffline ? 'var(--status-dot-offline)' : 'var(--tx3)',
-          }}
-        />
       </div>
 
       {showName && (
         <div className="text-center leading-tight">
-          <p className="text-xs font-medium" style={{ color: isOffline ? 'var(--tx3)' : 'var(--tx)' }}>
+          <p
+            className="text-xs font-medium"
+            style={{ color: isOffline ? 'var(--tx3)' : 'var(--tx)' }}
+          >
             {agent.name}
           </p>
           {showRole && (
