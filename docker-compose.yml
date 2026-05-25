@@ -1,0 +1,105 @@
+# docker-compose.yml — Kiri OS Production Stack
+#
+# Minimal install: Kiri Discord bot + MemPalace memory (Qdrant + Neo4j)
+# Personal POC setup (.hermes + tmux gateways) is completely unaffected.
+#
+# Usage:
+#   cp .env.example .env          # fill in secrets
+#   docker compose build          # first time only (~5 min)
+#   docker compose up -d          # start everything
+#   docker compose logs -f kiri   # watch Kiri connect to Discord
+#
+# Kiri talks to MemPalace via service name (mempalace:3100) on the
+# kiri-internal bridge — no host networking needed, translates cleanly to k3s.
+#
+# To stop without losing data:   docker compose down
+# To wipe and start fresh:       docker compose down -v
+
+networks:
+  kiri-internal:
+    driver: bridge
+
+volumes:
+  qdrant-data:
+  neo4j-data:
+  neo4j-logs:
+
+services:
+
+  # ── Vector DB ──────────────────────────────────────────────────
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: kiri-qdrant
+    restart: unless-stopped
+    networks:
+      - kiri-internal
+    ports:
+      - 127.0.0.1:6334:6333   # offset port — won't conflict with your POC qdrant
+    volumes:
+      - qdrant-data:/qdrant/storage
+
+  # ── Graph DB ───────────────────────────────────────────────────
+  neo4j:
+    image: neo4j:5.26-community
+    container_name: kiri-neo4j
+    restart: unless-stopped
+    networks:
+      - kiri-internal
+    ports:
+      - 127.0.0.1:7575:7474   # offset — won't conflict with POC neo4j
+      - 127.0.0.1:7688:7687
+    environment:
+      - NEO4J_AUTH=neo4j/mempalace
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+    healthcheck:
+      test: [CMD, wget, -qO-, http://localhost:7474]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── MemPalace ──────────────────────────────────────────────────
+  mempalace:
+    build:
+      context: /home/dakotasb/mempalace/src
+    image: mempalace:prod
+    container_name: kiri-mempalace
+    restart: unless-stopped
+    networks:
+      - kiri-internal
+    ports:
+      - 127.0.0.1:3101:3100   # offset — POC mempalace is on 3100
+    environment:
+      - QDRANT_URL=http://qdrant:6333
+      - NEO4J_URL=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=mempalace
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+
+  # ── Kiri Gateway ───────────────────────────────────────────────
+  # Bridge network — Kiri reaches MemPalace via service name (mempalace:3100).
+  # Outbound Discord HTTPS works fine from bridge. k3s-ready as-is.
+  kiri:
+    build:
+      context: /home/dakotasb/hermes-agent
+    image: hermes-agent:prod
+    container_name: kiri-gateway
+    restart: unless-stopped
+    networks:
+      - kiri-internal
+    volumes:
+      - ./hermes-data:/opt/data        # production config, NOT ~/.hermes
+    env_file:
+      - .env
+    environment:
+      - HERMES_UID=1000
+      - HERMES_GID=1000
+      - HERMES_HOME=/opt/data
+    command: [-p, kiri, gateway, run, --replace]
+    depends_on:
+      - mempalace

@@ -1,0 +1,205 @@
+#!/usr/bin/env python3
+"""
+Codex Repository Analyzer
+
+Analyzes GitHub repositories to extract patterns, architectures, and best practices.
+"""
+
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+from typing import Dict, List, Optional
+from urllib.parse import urlparse
+
+BASE_DIR = Path.home() / "command_center"
+ARTEFACTS_DIR = BASE_DIR / "artefacts" / "codex"
+KNOWLEDGE_DIR = BASE_DIR / "knowledge" / "codex"
+
+
+def ensure_dirs():
+    """Ensure output directories exist."""
+    ARTEFACTS_DIR.mkdir(parents=True, exist_ok=True)
+    KNOWLEDGE_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def get_repo_info(repo_name: str) -> Dict:
+    """Get basic repository info from GitHub API."""
+    try:
+        result = subprocess.run(
+            ["curl", "-s", f"https://api.github.com/repos/{repo_name}"],
+            capture_output=True, text=True, timeout=30
+        )
+        if result.returncode == 0:
+            return json.loads(result.stdout)
+        return {"error": "Failed to fetch repo info"}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+def analyze_repo_structure(repo_path: str) -> Dict:
+    """Analyze repository structure and patterns."""
+    analysis = {
+        "architecture_patterns": [],
+        "testing_patterns": [],
+        "documentation_patterns": [],
+        "config_management": [],
+        "observations": []
+    }
+    
+    # Check for common patterns
+    patterns_to_check = {
+        "architecture_patterns": [
+            ("package.json", "Node.js/npm project"),
+            ("Cargo.toml", "Rust project"),
+            ("requirements.txt", "Python project"),
+            ("go.mod", "Go project"),
+            ("Dockerfile", "Containerized application"),
+            ("docker-compose.yml", "Multi-container setup"),
+            ("Makefile", "Build automation"),
+        ],
+        "testing_patterns": [
+            ("tests/", "Dedicated test directory"),
+            ("__tests__/", "Jest-style tests"),
+            (".github/workflows/", "CI/CD workflows"),
+            ("pytest.ini", "Pytest configuration"),
+            ("jest.config.js", "Jest configuration"),
+            ("playwright.config.ts", "Playwright E2E testing"),
+        ],
+        "documentation_patterns": [
+            ("README.md", "Standard documentation"),
+            ("CONTRIBUTING.md", "Contribution guidelines"),
+            ("docs/", "Documentation directory"),
+            ("ARCHITECTURE.md", "Architecture documentation"),
+            ("API.md", "API documentation"),
+        ],
+        "config_management": [
+            (".env.example", "Environment configuration template"),
+            ("config/", "Configuration directory"),
+            ("settings.yaml", "YAML configuration"),
+            ("pyproject.toml", "Modern Python config"),
+        ]
+    }
+    
+    for category, patterns in patterns_to_check.items():
+        for pattern, description in patterns:
+            pattern_path = Path(repo_path) / pattern
+            if pattern_path.exists():
+                analysis[category].append(description)
+    
+    return analysis
+
+
+def generate_report(repo_name: str, repo_info: Dict, analysis: Dict) -> str:
+    """Generate markdown report from analysis."""
+    timestamp = os.popen('date +%Y-%m-%d_%H%M%S').read().strip()
+    
+    report = f"""# Codebase Analysis Report: {repo_name}
+
+**Generated:** {timestamp}
+**Repository:** https://github.com/{repo_name}
+
+## Overview
+
+- **Stars:** {repo_info.get('stargazers_count', 'N/A')}
+- **Forks:** {repo_info.get('forks_count', 'N/A')}
+- **Open Issues:** {repo_info.get('open_issues_count', 'N/A')}
+- **Language:** {repo_info.get('language', 'N/A')}
+- **License:** {repo_info.get('license', {}).get('name', 'N/A')}
+
+## Description
+{repo_info.get('description', 'No description available')}
+
+## Architecture Patterns Identified
+
+{chr(10).join([f"- {p}" for p in analysis.get('architecture_patterns', [])]) or "- None identified"}
+
+## Testing Patterns
+
+{chr(10).join([f"- {p}" for p in analysis.get('testing_patterns', [])]) or "- None identified"}
+
+## Documentation Patterns
+
+{chr(10).join([f"- {p}" for p in analysis.get('documentation_patterns', [])]) or "- None identified"}
+
+## Configuration Management
+
+{chr(10).join([f"- {p}" for p in analysis.get('config_management', [])]) or "- None identified"}
+
+## Observations
+
+{chr(10).join([f"- {o}" for o in analysis.get('observations', [])]) or "- No specific observations"}
+
+## Recommendations for Agent Optimization
+
+Based on this repository analysis, consider:
+
+1. **For Mason (Architecture):** Review project structure and component organization
+2. **For Prism (Testing):** Examine testing strategies and coverage approaches
+3. **For Forge (Implementation):** Study code patterns and module design
+4. **For Keystone (Standards):** Evaluate coding standards and conventions
+
+---
+*Report generated by Codex Intelligence System*
+"""
+    
+    return report
+
+
+def save_report(repo_name: str, report: str, category: str):
+    """Save report to artefacts directory."""
+    timestamp = os.popen('date +%Y%m%d_%H%M%S').read().strip()
+    safe_name = repo_name.replace("/", "_")
+    
+    report_path = ARTEFACTS_DIR / "patterns" / f"{category}_{safe_name}_{timestamp}.md"
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    with open(report_path, 'w') as f:
+        f.write(report)
+    
+    return str(report_path)
+
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Codex Repository Analyzer")
+    parser.add_argument("--repo", required=True, help="GitHub repo (owner/name)")
+    parser.add_argument("--category", default="general", help="Category for classification")
+    parser.add_argument("--depth", default="quick", choices=["quick", "deep"])
+    parser.add_argument("--focus", default="", help="Comma-separated focus areas")
+    
+    args = parser.parse_args()
+    
+    ensure_dirs()
+    
+    print(f"🔍 Analyzing repository: {args.repo}")
+    print(f"   Category: {args.category}")
+    print(f"   Depth: {args.depth}")
+    
+    # Fetch repository info
+    repo_info = get_repo_info(args.repo)
+    
+    if "error" in repo_info:
+        print(f"❌ Error: {repo_info['error']}")
+        sys.exit(1)
+    
+    # Perform analysis
+    analysis = analyze_repo_structure(".")  # Current directory for now
+    
+    # Generate and save report
+    report = generate_report(args.repo, repo_info, analysis)
+    report_path = save_report(args.repo, report, args.category)
+    
+    print(f"\n✅ Analysis complete!")
+    print(f"📄 Report saved to: {report_path}")
+    print(f"\n📊 Summary:")
+    print(f"   - Stars: {repo_info.get('stargazers_count', 'N/A')}")
+    print(f"   - Architecture patterns: {len(analysis['architecture_patterns'])}")
+    print(f"   - Testing patterns: {len(analysis['testing_patterns'])}")
+    
+    return report_path
+
+
+if __name__ == "__main__":
+    main()

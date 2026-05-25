@@ -1,0 +1,29 @@
+# Plaid Sandbox Configuration
+# Copy to ~/.hermes/plaid-sandbox/.env and fill in credentials
+#
+# Get credentials: https://dashboard.plaid.com/team/keys (free developer account)
+# SECURITY: This file should be git-ignored and chmod 600
+
+# Required: From Plaid Dashboard
+PLAID_CLIENT_ID=your_client_id_here
+PLAID_SECRET=sandbox_secret_here
+
+# Environment: sandbox (fake data) | development | production
+PLAID_ENV=sandbox
+
+# Optional: Public key for client-side (legacy)
+# PLAID_PUBLIC_KEY=your_public_key_here
+
+# Agent Configuration
+REVENUE_AGENT_ENABLED=false
+
+# Read-only scopes only (security critical)
+# Supported: transactions, balance, identity
+# NEVER add: assets, investments, payment_initiation, transfer
+REVENUE_AGENT_SCOPES=balance,transactions
+
+# Account types to query (comma-separated)
+REVENUE_AGENT_ACCOUNTS=checking,savings
+
+# Note: When enabled=true, agent will have read-only access
+# to balance and transaction data only. No transfers possible.

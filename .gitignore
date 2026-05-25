@@ -1,31 +1,41 @@
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
+# Secrets
+.env
 
-# next.js
-/.next/
-/out/
+# Runtime state
+profiles/*/sessions/
+profiles/*/memories/
+profiles/*/logs/
+profiles/*/state.db*
+profiles/*/auth.json
+profiles/*/auth.lock
+profiles/*/*.lock
+profiles/*/*.pid
+profiles/*/cache/
+profiles/*/sandboxes/
+profiles/*/cron/
+profiles/*/gateway/
+profiles/*/gateway_state.json
+profiles/*/processes.json
+profiles/*/platforms/
+profiles/*/jobs/
+profiles/*/bin/
+profiles/*/context_length_cache.yaml
+profiles/*/channel_directory.json
+profiles/*/checkpoints/
+profiles/*/home/
 
-# production
-/build
+# UI build artifacts
+ui/.next/
+ui/node_modules/
+ui/out/
 
-# misc
+# General
 .DS_Store
-*.pem
-Thumbs.db
+*.log
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env
-.env*.local
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# ── Python / skills tool artifacts ───────────
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+profiles/**/.curator_backups/
+profiles/**/.hub/

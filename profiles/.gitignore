@@ -1,0 +1,26 @@
+# Runtime state — never commit
+*/sessions/
+*/memories/
+*/logs/
+*/state.db
+*/state.db-shm
+*/state.db-wal
+*/auth.json
+*/auth.lock
+*.lock
+*.pid
+*/cache/
+*/sandboxes/
+*/cron/
+*/gateway/
+*/gateway_state.json
+*/gateway.lock
+*/gateway.pid
+*/processes.json
+*/platforms/
+*/jobs/
+*/bin/
+*/context_length_cache.yaml
+*/channel_directory.json
+*/checkpoints/
+*/home/

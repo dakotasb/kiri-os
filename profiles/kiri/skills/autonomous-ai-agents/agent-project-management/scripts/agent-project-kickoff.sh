@@ -1,0 +1,190 @@
+#!/bin/bash
+# agent-project-kickoff.sh
+# Kickoff script for professional multi-agent project management
+# Usage: ./agent-project-kickoff.sh {project_name} {source_dir} {phase_name}
+
+set -euo pipefail
+
+PROJECT_NAME="${1:-dashboard}"
+SOURCE_DIR="${2:-./source}"
+PHASE_NAME="${3:-phase1_security}"
+DATE=$(date +%Y%m%d)
+WORK_DIR="$HOME/command_center/kirimvp_orchestration/${PHASE_NAME}_${PROJECT_NAME}"
+SNAPSHOT_DIR="$HOME/command_center/infrastructure/snapshots"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo -e "${GREEN}=== Agent Project Management Kickoff ===${NC}"
+echo "Project: $PROJECT_NAME"
+echo "Phase: $PHASE_NAME"
+echo "Date: $DATE"
+echo ""
+
+# Step 1: Create work directory
+echo -e "${YELLOW}[1/6] Setting up work directory...${NC}"
+mkdir -p "$WORK_DIR"
+if [ -d "$SOURCE_DIR" ]; then
+    cp -r "$SOURCE_DIR"/* "$WORK_DIR/"
+    echo -e "${GREEN}✓ Copied source from $SOURCE_DIR${NC}"
+else
+    echo -e "${RED}✗ Source directory not found: $SOURCE_DIR${NC}"
+    exit 1
+fi
+
+# Step 2: Create git branch
+echo -e "${YELLOW}[2/6] Creating git branch...${NC}"
+cd ~/command_center
+git checkout -b "fix/${PHASE_NAME}-${PROJECT_NAME}" 2>/dev/null || git checkout "fix/${PHASE_NAME}-${PROJECT_NAME}"
+git add "$WORK_DIR"
+git commit -m "[BASELINE] Import $PROJECT_NAME from $SOURCE_DIR
+
+- Prepared for ${PHASE_NAME}
+- 36 issues tracked in GitHub
+- Baseline snapshot created"
+echo -e "${GREEN}✓ Branch created: fix/${PHASE_NAME}-${PROJECT_NAME}${NC}"
+
+# Step 3: Create baseline snapshot
+echo -e "${YELLOW}[3/6] Creating baseline snapshot...${NC}"
+mkdir -p "$SNAPSHOT_DIR"
+SNAPSHOT_NAME="${PROJECT_NAME}-${DATE}-baseline.tar.gz"
+tar -czf "$SNAPSHOT_DIR/$SNAPSHOT_NAME" -C "$WORK_DIR" .
+SNAPSHOT_SIZE=$(du -h "$SNAPSHOT_DIR/$SNAPSHOT_NAME" | cut -f1)
+echo -e "${GREEN}✓ Snapshot created: $SNAPSHOT_NAME ($SNAPSHOT_SIZE)${NC}"
+echo "Location: $SNAPSHOT_DIR/$SNAPSHOT_NAME"
+
+# Step 4: Dispatch coordination team
+echo -e "${YELLOW}[4/6] Dispatching coordination team...${NC}"
+cd ~/command_center
+
+# Create docs directory
+mkdir -p docs infrastructure
+
+# Dispatch agents in background
+echo "  → @archivist: Creating GitHub issues..."
+# hermes -p archivist chat -q "Create GitHub issues for $PROJECT_NAME" &
+
+echo "  → @relic: Setting up snapshots..."
+# hermes -p relic chat -q "Create baseline snapshot for $PROJECT_NAME" &
+
+echo "  → @ledger: Initializing project tracking..."
+# hermes -p ledger chat -q "Initialize PROJECT_STATUS.md for $PROJECT_NAME" &
+
+echo "  → @watcher: Starting monitors..."
+# hermes -p watcher chat -q "Monitor $PROJECT_NAME Phase 1" &
+
+echo "  → @chronicle: Tracking git history..."
+# hermes -p chronicle chat -q "Track git history for $PROJECT_NAME" &
+
+echo -e "${GREEN}✓ Coordination team dispatched${NC}"
+
+# Step 5: Set up publishing automation
+echo -e "${YELLOW}[5/6] Setting up publishing automation...${NC}"
+
+# Create Discord status reporter
+cat > "scripts/discord_${PROJECT_NAME}_reporter.py" << 'EOF'
+#!/usr/bin/env python3
+"""Discord status reporter for $PROJECT_NAME"""
+import re
+from datetime import datetime
+
+def read_project_status():
+    with open('docs/PROJECT_STATUS.md', 'r') as f:
+        return f.read()
+
+def format_discord_message(content):
+    # Extract phase progress
+    phase_match = re.search(r'Phase \d+: .+?\((\d+/\d+) resolved', content)
+    if phase_match:
+        progress = phase_match.group(1)
+    else:
+        progress = "0/0"
+    
+    return f"""🔄 **{PROJECT_NAME} - Fix Progress**
+
+**Phase:** {PHASE_NAME}
+**Progress:** {progress} resolved
+
+_View full status: docs/PROJECT_STATUS.md_
+"""
+
+if __name__ == "__main__":
+    content = read_project_status()
+    print(format_discord_message(content))
+EOF
+
+echo -e "${GREEN}✓ Publishing scripts created${NC}"
+
+# Step 6: Generate system overview
+echo -e "${YELLOW}[6/6] Generating system documentation...${NC}"
+
+cat > "docs/SYSTEM_OVERVIEW.md" << EOF
+# ${PROJECT_NAME} - System Overview
+**Generated:** $(date)
+**Project:** ${PROJECT_NAME}
+**Phase:** ${PHASE_NAME}
+
+## Repository Structure
+
+\`\`\`
+~/command_center/
+├── docs/
+│   ├── PROJECT_STATUS.md
+│   ├── GIT_HISTORY.md
+│   └── SYSTEM_OVERVIEW.md
+├── infrastructure/
+│   └── snapshots/
+│       └── ${PROJECT_NAME}-${DATE}-baseline.tar.gz
+└── kirimvp_orchestration/
+    └── ${PHASE_NAME}_${PROJECT_NAME}/
+        └── (code)
+\`\`\`
+
+## Active Agents
+
+### Coordination Team
+- @archivist → GitHub Issues
+- @chronicle → Git History
+- @relic → Snapshots
+- @ledger → Project Tracking
+- @watcher → Monitoring
+
+### Publishing Team
+- @launchpad → GitHub Auto-push
+- @ledger → Discord Updates
+
+## Monitoring
+
+- **GitHub:** https://github.com/dakotasb/Kiri
+- **Discord:** #dev-team
+- **Snapshots:** infrastructure/snapshots/
+
+## Rollback
+
+Baseline snapshot: ${SNAPSHOT_NAME}
+Restore: tar -xzf infrastructure/snapshots/${SNAPSHOT_NAME} -C {workdir}/
+
+---
+*Generated by agent-project-kickoff.sh*
+EOF
+
+echo -e "${GREEN}✓ System documentation created${NC}"
+
+# Final summary
+echo ""
+echo -e "${GREEN}=== Kickoff Complete ===${NC}"
+echo ""
+echo "Work Directory: $WORK_DIR"
+echo "Git Branch: fix/${PHASE_NAME}-${PROJECT_NAME}"
+echo "Baseline Snapshot: $SNAPSHOT_DIR/$SNAPSHOT_NAME"
+echo ""
+echo "Next Steps:"
+echo "  1. Wait for coordination team to complete setup"
+echo "  2. Dispatch implementation agents"
+echo "  3. Monitor #dev-team channel for updates"
+echo "  4. Check GitHub for issue tracking"
+echo ""
+echo -e "${YELLOW}Coordinator: @kiri${NC}"

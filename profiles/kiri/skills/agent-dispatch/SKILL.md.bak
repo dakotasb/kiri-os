@@ -1,0 +1,266 @@
+---
+skill_name: agent-dispatch
+version: "1.0.0"
+description: >
+  Dispatch agent tasks to appropriate models based on manifest configuration.
+  Reads agent manifests from ~/command_center/agents/, extracts task-specific
+  model mappings, and spawns independent cron jobs with correct model routing.
+triggers:
+  - "dispatch agent"
+  - "spawn agent"
+  - "run agent task"
+  - "agent with model"
+---
+
+# Agent Dispatch System
+
+## Overview
+
+This skill enables multi-model agent execution by:
+1. Reading agent manifests from `~/command_center/agents/<agent>/manifest.json`
+2. Selecting appropriate model based on `task_type` and manifest's `task_mapping`
+3. Spawning independent cron jobs via `cronjob_create` with `model` parameter
+4. Routing to Ollama Cloud custom endpoint for actual model execution
+
+## Critical Architecture
+
+```
+User Request: "Spawn Keystone for code_review"
+              |
+              v
+┌─────────────────────────────────┐
+│     AGENT DISPATCHER          │
+│  (This skill - YOUR CODE)       │
+└─────────────────────────────────┘
+              |
+              v
+┌─────────────────────────────────┐
+│ 1. Read:                        │
+│    ~/command_center/agents/    │
+│    Keystone/manifest.json        │
+│                                │
+│ 2. Parse task_mapping:         │
+│    "code_review" → "deepseek-r1"│
+│                                │
+│ 3. Fallback: models.primary    │
+└─────────────────────────────────┘
+              |
+              v
+┌─────────────────────────────────┐
+│ 4. Spawn: cronjob_create(      │
+│     prompt="You are Keystone...",
+│     model="deepseek-r1",       │
+│     ...                        │
+│   )                            │
+└─────────────────────────────────┘
+              |
+              v
+┌─────────────────────────────────┐
+│   HERMES (native layer)        │
+│   Sends to Ollama Cloud:       │
+│   POST /v1/chat/completions    │
+│   { model: "deepseek-r1", ... }│
+└─────────────────────────────────┘
+```
+
+## Usage
+
+### Quick Dispatch
+
+```python
+# Spawn agent with specific task
+dispatch_agent("Keystone", "code_review", "Review this PR...")
+
+# Result: Cron job spawned running deepseek-r1 (per Keystone manifest)
+```
+
+### Manual Cron Job (for full control)
+
+```python
+cronjob_create(
+    prompt="""You are Keystone, Technical Lead.
+    
+    Task: code_review
+    Manifest: ~/command_center/agents/Keystone/manifest.json
+    
+    Review this code for architectural patterns and standards compliance.
+    Submit: /path/to/code.py
+    """,
+    model="deepseek-r1",  # From Keystone manifest task_mapping
+    schedule="now",  # Or "0 2 * * *" for nightly
+    skills=["Keystone"]  # Adds context label
+)
+```
+
+## Agent Manifest Format
+
+Every agent MUST have `~/command_center/agents/<name>/manifest.json`:
+
+```json
+{
+  "agent": {
+    "name": "Keystone",
+    "role": "Technical Lead",
+    "description": "..."
+  },
+  "models": {
+    "primary": "kimi-k2.5",
+    "fallback": ["deepseek-r1", "llama-3.2-90b"],
+    "task_mapping": {
+      "architecture": "llama-3.2-90b",
+      "code_review": "deepseek-r1",
+      "coding": "deepseek-r1",
+      "standards": "kimi-k2.5",
+      "documentation": "qwen3.5",
+      "analysis": "claude-3.5-sonnet"
+    }
+  },
+  "identity": {
+    "prompt": "You are Keystone, the Technical Lead..."
+  }
+}
+```
+
+## Config Reference
+
+Your `~/.hermes/config.yaml` must have:
+
+```yaml
+model:
+  default: kimi-k2.5
+  provider: custom
+  base_url: https://ollama.com/v1
+  api_key: ${OLLAMA_API_KEY}
+```
+
+**Why `custom` provider?**
+- Ollama Cloud follows OpenAI-compatible API
+- `custom` provider supports arbitrary base_url
+- Allows per-request model selection via `model` parameter
+
+## Available Models (Ollama Cloud)
+
+Check current available models:
+```bash
+curl -s https://ollama.com/v1/models \
+  -H "Authorization: Bearer $OLLAMA_API_KEY" |
+  jq -r '.data[].id'
+```
+
+Typical models available:
+- `kimi-k2.5`
+- `deepseek-r1`
+- `llama-3.2-90b`
+- `qwen3.5`
+- `claude-3.5-sonnet` (if routed through endpoint)
+
+## Commands
+
+### List Available Agents
+
+```bash
+ls ~/command_center/agents/
+```
+
+### View Agent Manifest
+
+```bash
+cat ~/command_center/agents/Keystone/manifest.json | jq '.models'
+```
+
+### Dispatch Single Agent
+
+```python
+cronjob_create(
+    name="keystone-code-review",
+    prompt="You are Keystone. Review the following code...",
+    model="deepseek-r1",
+    schedule="now",
+    skills=["Keystone", "github-code-review"]
+)
+```
+
+### Dispatch with Team Context
+
+```python
+# For coordinated work, pass team membership
+from hermes_tools import cronjob_create
+
+cronjob_create(
+    name="mason-arch-audit",
+    prompt="""You are Mason, Code Architect.
+    
+    Team Context: Create Team Phase 2
+    Related Agents: Keystone, Forge, Horizon
+    
+    Task: Audit architecture of Command Center vF.3
+    Target: ~/command_center/
+    Output: ~/command_center/artefacts/audits/vf3_architecture_report.md
+    """,
+    model="kimi-k2.5",  # From Mason's task_mapping["arch"]
+    schedule="now",
+    skills=["Mason", "architecture-diagram"],
+    context_from=["keystone-standards-review"]  # Inject prior work
+)
+```
+
+## Important Constraints
+
+### ✅ What Works
+
+- **Cron jobs** → Independent process → Different model ✅
+- **cronjob_create with model=** → Explicit model selection ✅
+- **Read manifest → extract model → pass to cronjob** ✅
+
+### ❌ What Does NOT Work
+
+- `delegate_task` with different model ❌ (shares parent process)
+- Hermes reading manifest automatically ❌ (not native)
+- MemPalace as operational config ❌ (documentation only)
+
+## Debugging
+
+### Verify Model Routing
+
+```bash
+# Check what model a job will use
+hermes cron list
+# Look for "model" column
+```
+
+### Test Custom Endpoint
+
+```python
+from hermes_tools import terminal
+
+result = terminal(
+    'curl -s https://ollama.com/v1/models '
+    '-H "Authorization: Bearer $OLLAMA_API_KEY" | jq -r ".data[].id"'
+)
+print(result["output"])
+```
+
+### Check Job Logs
+
+```python
+process(action="log", session_id="<job_session_id>")
+```
+
+## Integration Pattern
+
+When user says: `"Spawn Keystone for code review"`
+
+You should:
+1. **Read** `~/command_center/agents/Keystone/manifest.json`
+2. **Extract** `task_mapping["code_review"]` → `"deepseek-r1"`
+3. **Get** `identity.prompt` from manifest
+4. **Spawn** `cronjob_create(model="deepseek-r1", prompt=identity_prompt + task_context)`
+5. **Report** back: "Spawned Keystone as independent cron job using deepseek-r1"
+
+## Roadmap
+
+1. ✅ Custom endpoint configured (Phase 1)
+2. ⬜ Build `dispatch_agent(agent, task_type, context)` helper
+3. ⬜ Create agent inventory view (all agents + available models)
+4. ⬜ Add batch dispatch (Phase 2-4 Create Team workflows)
+5. ⬜ Build monitoring dashboard (track agent job status across models)

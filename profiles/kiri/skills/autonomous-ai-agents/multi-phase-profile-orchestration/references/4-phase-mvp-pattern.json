@@ -1,0 +1,94 @@
+{
+  "title": "4-Phase MVP Dashboard Build Pattern",
+  "description": "Complete agent orchestration for building a Next.js MVP dashboard with research, architecture, implementation, and degradation detection",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "UI Platform Decision",
+      "agents": [
+        {"name": "scope", "role": "Research Engineer", "model": "kimi-k2.5", "output": "ui_framework_research.md"},
+        {"name": "intel", "role": "Market Intelligence Analyst", "model": "mistral-large-3:675b", "output": "competitor_ui_analysis.md"},
+        {"name": "horizon", "role": "Market Intelligence Analyst", "model": "mistral-large-3:675b", "output": "ui_trends_2025.md"}
+      ],
+      "gate_after": true,
+      "expected_outputs": 3
+    },
+    {
+      "phase": 2,
+      "name": "Architecture & Design",
+      "agents": [
+        {"name": "mason", "role": "Code Architect", "model": "deepseek-v4-pro", "output": "mvp_architecture.md"},
+        {"name": "keystone", "role": "Technical Lead", "model": "kimi-k2.5", "output": "technical_standards.md"},
+        {"name": "vantage", "role": "UX/UI Engineer", "model": "kimi-k2.5", "output": "ux_design_spec.md"}
+      ],
+      "depends_on": "phase1_outputs",
+      "gate_after": true,
+      "sequential_within_phase": true
+    },
+    {
+      "phase": 3,
+      "name": "Build & Test",
+      "agents": [
+        {"name": "forge", "role": "Senior Software Engineer", "model": "deepseek-v4-pro", "track": "implementation", "output": "mvp-dashboard/"},
+        {"name": "prism", "role": "QA Automation Engineer", "model": "mistral-large-3:675b", "track": "testing", "output": "testing/"},
+        {"name": "codex", "role": "Codebase Intelligence Analyst", "model": "kimi-k2.5", "track": "documentation", "output": "documentation/"},
+        {"name": "relay", "role": "CI/CD Pipeline Engineer", "model": "kimi-k2.5", "track": "deployment", "output": "deployment/"}
+      ],
+      "depends_on": "phase2_outputs",
+      "parallel_within_phase": true,
+      "gate_after": false
+    },
+    {
+      "phase": 4,
+      "name": "Degradation Detection System",
+      "agents": [
+        {"name": "bastion", "role": "Security Engineer", "model": "deepseek-v4-pro", "output": "degradation_monitor_system.md"},
+        {"name": "temper", "role": "QA Hardening Engineer", "model": "kimi-k2.5", "output": "edge_case_testing.md"}
+      ],
+      "depends_on": "phase3_outputs",
+      "gate_after": false
+    }
+  ],
+  "workspace_structure": {
+    "base": "~/command_center/kirimvp_orchestration/",
+    "subdirs": [
+      "phase1_ui_decision/",
+      "phase2_architecture/", 
+      "phase3_build/",
+      "phase4_degradation/"
+    ]
+  },
+  "timing": {
+    "estimated_total_hours": "6-8",
+    "phase1_duration_hours": "1-2",
+    "phase2_duration_hours": "1-2", 
+    "phase3_duration_hours": "4-6",
+    "phase4_duration_hours": "1-2"
+  },
+  "model_distribution": {
+    "deepseek-v4-pro": ["mason", "forge", "bastion"],
+    "kimi-k2.5": ["scope", "keystone", "vantage", "codex", "relay", "temper"],
+    "mistral-large-3:675b": ["intel", "horizon", "prism"]
+  },
+  "success_criteria": {
+    "phase1": [
+      "3 research documents created",
+      "UI framework chosen (Next.js 14+)"
+    ],
+    "phase2": [
+      "Architecture document complete",
+      "Technical standards defined",
+      "UX spec with design tokens"
+    ],
+    "phase3": [
+      "Next.js project scaffolded",
+      "Components render without errors",
+      "Tests pass",
+      "README with run instructions"
+    ],
+    "phase4": [
+      "Degradation patterns documented",
+      "Edge cases identified"
+    ]
+  }
+}

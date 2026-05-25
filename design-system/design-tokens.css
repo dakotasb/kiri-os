@@ -1,0 +1,258 @@
+/**
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║                    KIRI AGENT OS — Design Tokens                        ║
+ * ║                         Color System v1.0                                ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ *
+ * Palette:
+ *   Primary:   #B775BF  #6CD9BA  #3F289D  #1E18D9  #13121A
+ *   Secondary: #07D98C  #4227F2  #F27EB4  #A60D61  #400224
+ *
+ * Contrast targets (WCAG 2.1):
+ *   - Normal text (AA):    4.5:1
+ *   - Large text (AA):     3:1
+ *   - UI components (AA):  3:1
+ *   - Normal text (AAA):   7:1  (where feasible)
+ */
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* 1. RAW COLOR PRIMITIVES (source hex values — do NOT use directly in UI)   */
+/* ────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Primary primitives */
+  --kir-prim-orchid:   #B775BF;  /* muted orchid */
+  --kir-prim-mint:     #6CD9BA;  /* soft mint green */
+  --kir-prim-violet:   #3F289D;  /* deep violet */
+  --kir-prim-electric: #1E18D9;  /* electric indigo */
+  --kir-prim-ink:      #13121A;  /* near-black ink */
+
+  /* Secondary primitives */
+  --kir-sec-emerald:   #07D98C;  /* bright emerald */
+  --kir-sec-indigo:    #4227F2;  /* vivid indigo */
+  --kir-sec-blush:     #F27EB4;  /* soft pink */
+  --kir-sec-berry:     #A60D61;  /* rich berry */
+  --kir-sec-maroon:    #400224;  /* deep maroon */
+
+  /* Neutral scale (derived for backgrounds, borders, surfaces) */
+  --kir-neutral-0:     #FFFFFF;
+  --kir-neutral-50:    #F8F7FA;
+  --kir-neutral-100:   #EDECEF;
+  --kir-neutral-200:   #DAD9DE;
+  --kir-neutral-300:   #B5B4BB;
+  --kir-neutral-400:   #8F8E96;
+  --kir-neutral-500:   #6A6972;
+  --kir-neutral-600:   #4A4952;
+  --kir-neutral-700:   #323138;
+  --kir-neutral-800:   #1C1B22;
+  --kir-neutral-900:   #13121A;  /* matches --kir-prim-ink */
+  --kir-neutral-950:   #0A0910;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* 2. SEMANTIC COLOR TOKENS — LIGHT MODE (default)                           */
+/* ────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* ── Backgrounds ── */
+  --kir-bg-base:              #0B0A10;           /* app root background */
+  --kir-bg-page:              #13121A;           /* page/panel surfaces */
+  --kir-bg-surface:           #1C1B22;           /* elevated cards, inputs */
+  --kir-bg-popup:             #23222A;           /* dropdowns, tooltips, modals */
+  --kir-bg-hover:             #2A2932;           /* hover state overlay */
+  --kir-bg-active:            #3A3944;           /* active/selected state */
+  --kir-bg-disabled:          #16151C;           /* disabled surface */
+
+  /* ── Text ── */
+  --kir-text-primary:         #F2F1F4;           /* primary content */
+  --kir-text-secondary:       #B5B4BB;           /* secondary / muted */
+  --kir-text-tertiary:        #6A6972;           /* captions, placeholders */
+  --kir-text-disabled:        #4A4952;           /* disabled text */
+  --kir-text-inverse:         #13121A;           /* text on colored surfaces */
+
+  /* ── Brand / Accent ── */
+  --kir-accent-primary:       #6CD9BA;           /* mint — primary actions */
+  --kir-accent-primary-hover: #8CE4CC;
+  --kir-accent-primary-active:#5BCBA8;
+  --kir-accent-secondary:     #B775BF;           /* orchid — secondary accents */
+  --kir-accent-secondary-hover:#C990CD;
+  --kir-accent-emerald:       #07D98C;           /* emerald — success/positive */
+  --kir-accent-emerald-hover: #36E2A2;
+  --kir-accent-indigo:        #4227F2;           /* indigo — links, highlights */
+  --kir-accent-indigo-hover:  #6352F5;
+  --kir-accent-blush:         #F27EB4;           /* pink — special highlights */
+
+  /* ── Feedback / Semantic ── */
+  --kir-info:                 #4227F2;
+  --kir-info-subtle:          rgba(66, 39, 242, 0.15);
+  --kir-success:              #07D98C;
+  --kir-success-subtle:       rgba(7, 217, 140, 0.15);
+  --kir-warning:              #F2C94C;
+  --kir-warning-subtle:       rgba(242, 201, 76, 0.15);
+  --kir-danger:               #E54848;
+  --kir-danger-subtle:        rgba(229, 72, 72, 0.15);
+
+  /* ── Borders ── */
+  --kir-border-base:          #2A2932;
+  --kir-border-hover:         #4A4952;
+  --kir-border-focus:         #6CD9BA;
+  --kir-border-error:         #E54848;
+
+  /* ── Status / Decorative ── */
+  --kir-status-online:        #07D98C;
+  --kir-status-away:          #F2C94C;
+  --kir-status-busy:          #E54848;
+  --kir-status-offline:       #4A4952;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* 3. SEMANTIC COLOR TOKENS — LIGHT MODE OVERRIDE                            */
+/* ────────────────────────────────────────────────────────────────────────── */
+[data-theme="light"] {
+  /* ── Backgrounds (inverted) ── */
+  --kir-bg-base:              #F5F4F7;
+  --kir-bg-page:              #FFFFFF;
+  --kir-bg-surface:           #F8F7FA;
+  --kir-bg-popup:             #FFFFFF;
+  --kir-bg-hover:             #EDECEF;
+  --kir-bg-active:            #DAD9DE;
+  --kir-bg-disabled:          #F8F7FA;
+
+  /* ── Text ── */
+  --kir-text-primary:         #13121A;
+  --kir-text-secondary:       #4A4952;
+  --kir-text-tertiary:        #8F8E96;
+  --kir-text-disabled:        #B5B4BB;
+  --kir-text-inverse:         #F2F1F4;
+
+  /* ── Brand / Accent (mostly unchanged, subtle adjustment) ── */
+  --kir-accent-primary:       #0FA87A;
+  --kir-accent-primary-hover: #0D8F67;
+  --kir-accent-primary-active:#0B7A58;
+  --kir-accent-secondary:     #8A4E91;
+  --kir-accent-secondary-hover:#6C3A74;
+  --kir-accent-emerald:       #059E68;
+  --kir-accent-emerald-hover: #048556;
+  --kir-accent-indigo:        #331BC5;
+  --kir-accent-indigo-hover:  #2A18A8;
+
+  /* ── Borders ── */
+  --kir-border-base:          #DAD9DE;
+  --kir-border-hover:         #B5B4BB;
+  --kir-border-focus:         #0FA87A;
+  --kir-border-error:         #D64545;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* 4. HIGH-CONTRAST ACCESSIBILITY MODE (optional toggle)                     */
+/* ────────────────────────────────────────────────────────────────────────── */
+[data-theme="high-contrast"] {
+  --kir-text-primary:         #FFFFFF;
+  --kir-text-secondary:       #E0DFE5;
+  --kir-text-tertiary:        #B5B4BB;
+  --kir-border-base:          #4A4952;
+  --kir-border-hover:         #8F8E96;
+  --kir-bg-surface:           #000000;
+  --kir-bg-page:              #000000;
+  --kir-accent-primary:       #6CD9BA;
+  --kir-accent-primary-hover: #8CE4CC;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* 5. COMPONENT TOKENS — Buttons                                              */
+/* ────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Primary button (mint accent) */
+  --kir-btn-primary-bg:              var(--kir-accent-primary);
+  --kir-btn-primary-text:            var(--kir-prim-ink);
+  --kir-btn-primary-hover-bg:        var(--kir-accent-primary-hover);
+  --kir-btn-primary-active-bg:       var(--kir-accent-primary-active);
+  --kir-btn-primary-disabled-bg:     rgba(108, 217, 186, 0.3);
+  --kir-btn-primary-disabled-text:   rgba(19, 18, 26, 0.4);
+
+  /* Secondary button (orchid) */
+  --kir-btn-secondary-bg:            var(--kir-accent-secondary);
+  --kir-btn-secondary-text:          var(--kir-prim-ink);
+  --kir-btn-secondary-hover-bg:      var(--kir-accent-secondary-hover);
+  --kir-btn-secondary-active-bg:     #A865AF;
+  --kir-btn-secondary-disabled-bg:   rgba(183, 117, 191, 0.3);
+  --kir-btn-secondary-disabled-text: rgba(19, 18, 26, 0.4);
+
+  /* Danger button (destructive red) */
+  --kir-btn-danger-bg:               #E54848;
+  --kir-btn-danger-text:             #FFFFFF;
+  --kir-btn-danger-hover-bg:         #F55F5F;
+  --kir-btn-danger-active-bg:        #C73D3D;
+  --kir-btn-danger-disabled-bg:      rgba(229, 72, 72, 0.3);
+  --kir-btn-danger-disabled-text:    rgba(255, 255, 255, 0.4);
+
+  /* Ghost button (bordered, transparent bg) */
+  --kir-btn-ghost-bg:                transparent;
+  --kir-btn-ghost-text:              var(--kir-text-primary);
+  --kir-btn-ghost-border:            var(--kir-border-base);
+  --kir-btn-ghost-hover-bg:          var(--kir-bg-hover);
+  --kir-btn-ghost-hover-border:      var(--kir-border-hover);
+  --kir-btn-ghost-active-bg:         var(--kir-bg-active);
+  --kir-btn-ghost-disabled-text:     var(--kir-text-disabled);
+  --kir-btn-ghost-disabled-border:   var(--kir-border-base);
+
+  /* Link button (text-only) */
+  --kir-btn-link-text:               var(--kir-accent-indigo);
+  --kir-btn-link-hover-text:         var(--kir-accent-indigo-hover);
+  --kir-btn-link-active-text:        #3019C5;
+  --kir-btn-link-disabled-text:      var(--kir-text-disabled);
+}
+
+/* Light mode button overrides */
+[data-theme="light"] {
+  --kir-btn-primary-bg:              var(--kir-accent-primary);
+  --kir-btn-primary-text:            #FFFFFF;
+  --kir-btn-primary-hover-bg:        var(--kir-accent-primary-hover);
+  --kir-btn-primary-active-bg:       var(--kir-accent-primary-active);
+
+  --kir-btn-secondary-bg:            var(--kir-accent-secondary);
+  --kir-btn-secondary-text:          #FFFFFF;
+  --kir-btn-secondary-hover-bg:      var(--kir-accent-secondary-hover);
+  --kir-btn-secondary-active-bg:     #6C3A74;
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* 6. FORM / INPUT TOKENS                                                     */
+/* ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --kir-input-bg:                    var(--kir-bg-surface);
+  --kir-input-text:                  var(--kir-text-primary);
+  --kir-input-placeholder:           var(--kir-text-tertiary);
+  --kir-input-border:                var(--kir-border-base);
+  --kir-input-hover-border:          var(--kir-border-hover);
+  --kir-input-focus-border:          var(--kir-border-focus);
+  --kir-input-focus-ring:            rgba(108, 217, 186, 0.25);
+  --kir-input-error-border:          var(--kir-border-error);
+  --kir-input-error-ring:            rgba(229, 72, 72, 0.25);
+  --kir-input-disabled-bg:           var(--kir-bg-disabled);
+  --kir-input-disabled-text:         var(--kir-text-disabled);
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* 7. FOCUS & ACCESSIBILITY TOKENS                                           */
+/* ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --kir-focus-ring:                  0 0 0 2px var(--kir-bg-base), 0 0 0 4px var(--kir-border-focus);
+  --kir-focus-ring-offset:           2px;
+  --kir-focus-transition:            box-shadow 150ms ease-out;
+  --kir-reduced-motion:              none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --kir-reduced-motion:            all;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/* 8. OPACITY / STATE OVERLAYS                                               */
+/* ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --kir-state-hover:                 rgba(255, 255, 255, 0.05);
+  --kir-state-active:                rgba(255, 255, 255, 0.1);
+  --kir-state-selected:              rgba(108, 217, 186, 0.1);
+  --kir-state-disabled:              0.4;
+}
