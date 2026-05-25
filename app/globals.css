@@ -6,32 +6,32 @@
    THEME VARIABLES
    ═══════════════════════════════════════════════════════ */
 
-/* ── Dark (default) ── */
+/* ── Dark (default) — obsidian/slate canvas, no purple in surfaces ── */
 :root {
-  /* Space-separated RGB triplets — lets Tailwind opacity modifiers work:
-     e.g. bg-kiri/10 → rgb(var(--t-kiri) / 0.1)                        */
-  --t-bg:           19  18  26;
-  --t-surface:      26  24  40;
-  --t-s1:           33  30  48;
-  --t-s2:           42  36  64;
-  --t-border:       36  31  53;
-  --t-border-hover: 51  45  74;
-  --t-tx:          238 238 250;
-  --t-tx2:         122 122 154;
-  --t-tx3:          74  74 106;
-  --t-kiri:        108 217 186;
-  --t-warm:        242 126 180;
-  --t-warm-deep:   166  13  97;
-  --t-deep:         63  40 157;
+  /* Space-separated RGB triplets — lets Tailwind opacity modifiers work.
+     Surfaces are true neutral-dark slate. All hue lives in the accents. */
+  --t-bg:           11  11  14;   /* #0B0B0E — near-black obsidian        */
+  --t-surface:      18  18  22;   /* #121216 — dark slate card             */
+  --t-s1:           24  24  30;   /* #18181E — elevated panel              */
+  --t-s2:           32  32  40;   /* #202028 — highest elevation           */
+  --t-border:       38  38  48;   /* #262630 — subtle separator            */
+  --t-border-hover: 54  54  68;   /* #363644 — hover border                */
+  --t-tx:          234 234 242;   /* #EAEAF2 — near-white, faint cool cast */
+  --t-tx2:         130 130 148;   /* #828294 — mid gray                    */
+  --t-tx3:          68  68  82;   /* #444452 — muted gray                  */
+  --t-kiri:        108 217 186;   /* #6CD9BA — mint teal hero              */
+  --t-warm:        242 126 180;   /* #F27EB4 — soft pink                   */
+  --t-warm-deep:   166  13  97;   /* #A60D61 — deep magenta                */
+  --t-deep:         63  40 157;   /* #3F289D — deep indigo (accent only)   */
 
   /* Full hex / rgba — used by body bg, CSS rules, and inline styles */
-  --bg:      #13121A;
-  --surface: #1A1828;
-  --s1:      #211E30;
-  --border:  #241F35;
-  --tx:      #EEEEFA;
-  --tx2:     #7A7A9A;
-  --tx3:     #4A4A6A;
+  --bg:      #0B0B0E;
+  --surface: #121216;
+  --s1:      #18181E;
+  --border:  #262630;
+  --tx:      #EAEAF2;
+  --tx2:     #828294;
+  --tx3:     #444452;
   --kiri:    #6CD9BA;
   --warm:    #F27EB4;
 
@@ -41,10 +41,10 @@
   --ov-md: rgba(255,255,255,0.08);
 
   /* Component-specific semantic vars */
-  --chat-bar-bg:        rgba(19,18,26,0.90);
-  --input-bg:           #1A1828;
-  --input-border:       #252530;
-  --status-dot-offline: #252530;
+  --chat-bar-bg:        rgba(11,11,14,0.92);
+  --input-bg:           #121216;
+  --input-border:       #2A2A36;
+  --status-dot-offline: #2A2A36;
   --badge-idle-bg:      rgba(255,255,255,0.04);
   --badge-idle-border:  rgba(255,255,255,0.07);
   --badge-off-bg:       rgba(255,255,255,0.03);
