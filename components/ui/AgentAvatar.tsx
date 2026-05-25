@@ -13,9 +13,11 @@ interface AgentAvatarProps {
   size: number;
   /** Desaturate + dim when offline */
   muted?: boolean;
+  /** Override the allowed mouth styles for this agent */
+  mouth?: ('smile' | 'laughing' | 'smirk' | 'nervous' | 'sad' | 'surprised')[];
 }
 
-export function AgentAvatar({ seed, accent, size, muted = false }: AgentAvatarProps) {
+export function AgentAvatar({ seed, accent, size, muted = false, mouth }: AgentAvatarProps) {
   const svgString = useMemo(() => {
     const hex = accent.replace('#', '');
     return createAvatar(micah, {
@@ -24,8 +26,8 @@ export function AgentAvatar({ seed, accent, size, muted = false }: AgentAvatarPr
       backgroundColor: ['transparent'],
       // Shirt picks up the agent's accent colour
       shirtColor: [hex],
-      // Happy or neutral only — no sad/nervous/surprised
-      mouth: ['smile', 'laughing', 'smirk'],
+      // Happy or neutral only — overridable per agent
+      mouth: mouth ?? ['smile', 'laughing', 'smirk'],
       // Gender-neutral: strip all gendered accessories and makeup
       earringProbability: 0,
       eyeShadowProbability: 0,
