@@ -22,9 +22,14 @@ export function AgentAvatar({ seed, accent, size, muted = false }: AgentAvatarPr
       seed,
       size,
       backgroundColor: ['transparent'],
-      // Shirt picks up the agent's accent colour — the most visible tie to their palette
+      // Shirt picks up the agent's accent colour
       shirtColor: [hex],
-      // Let the seed drive everything else: hair, eyes, mouth, nose, ear style
+      // Happy or neutral only — no sad/nervous/surprised
+      mouth: ['smile', 'laughing'],
+      // Gender-neutral: strip all gendered accessories and makeup
+      earringProbability: 0,
+      eyeShadowProbability: 0,
+      facialHairProbability: 0,
     }).toString();
   }, [seed, accent, size]);
 
