@@ -25,7 +25,7 @@ export function AgentAvatar({ seed, accent, size, muted = false }: AgentAvatarPr
       // Shirt picks up the agent's accent colour
       shirtColor: [hex],
       // Happy or neutral only — no sad/nervous/surprised
-      mouth: ['smile', 'laughing'],
+      mouth: ['smile', 'laughing', 'smirk'],
       // Gender-neutral: strip all gendered accessories and makeup
       earringProbability: 0,
       eyeShadowProbability: 0,
