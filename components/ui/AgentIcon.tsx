@@ -94,7 +94,7 @@ export function AgentIcon({
             accent={agent.accent}
             size={cfg.wrap}
             muted={isOffline}
-            mouth={agent.id === 'kiri' ? ['smirk'] : undefined}
+            mouth={agent.id === 'kiri' ? ['smile'] : undefined}
           />
         </div>
 
