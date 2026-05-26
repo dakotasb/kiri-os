@@ -1,0 +1,140 @@
+# Ideal Tuesday Configuration
+# Peak Performance Day - Monster System v1.0
+
+day_type: PEAK_PERFORMANCE_DAY
+
+# Day Characteristics
+date_pattern: Tuesday
+constraints:
+  custody: NO
+  work: OFFICE (commute day)
+  can_stay_late: YES
+  hard_exit: 17:00 (home by 17:30 for wife time)
+  sleep_target: 22:00
+  wake_target: 06:00
+
+---
+
+## 📅 Chronobiology (Layer 1)
+
+### Ideal Tuesday Timeline
+timeline:
+  06:00 - 06:30:
+    phase: Morning_Routine
+    activity: Wake + Hydrate + Plan Review
+    energy: RISING
+    
+  06:30 - 07:15:
+    phase: Commute_Prep
+    activity: Light Tasks / Email Triage (low cognitive)
+    special: Daughter not here = no bus rush
+    
+  07:15 - 08:00:
+    phase: Commute
+    activity: Strategic Thinking / Learning
+    notes: Peak cognitive window starts at 08:00
+    
+  08:00 - 11:30:
+    phase: DEEP_WORK_BLOCK
+    activity: Highest value work
+    cognitive_window: PEAK
+    ultradian_cycles: 2 x 90min sessions
+    break: 10:00 (15min)
+    
+  11:30 - 12:30:
+    phase: Wind_Down_Deep_Work
+    activity: Admin / Prep for lunch
+    
+  12:30 - 13:30:
+    phase: Recovery
+    activity: Lunch (light)
+    cognititve_state: VALLEY
+    
+  13:30 - 17:00:
+    phase: Meetings_Collaboration
+    activity: Team work / Calls / Admin
+    cognitive_window: SECOND_PEAK (use strategically)
+    
+  17:00 - 17:30:
+    phase: Commute_Home
+    activity: Final tasks wrap-up
+    
+  17:30 - 19:00:
+    phase: COUPLE_TIME
+    activity: Quality time with wife
+    protected: YES
+    
+  19:00 - 21:00:
+    phase: Personal / Projects
+    activity: Tonal workout (60min) if high energy, or Chill
+    
+  21:00 - 22:00:
+    phase: Wind_Down
+    activity: Light reading / prep for sleep
+    
+  22:00:
+    phase: SLEEP
+    target: 8 hours continuous
+
+---
+
+## 🧠 Optimization Rules
+
+triggers:
+  morning_routine:
+    time: 06:00
+    action: Send briefing + day_type confirmation
+    
+  deep_work_start:
+    time: 08:00
+    action: DND ON, notification silent
+    
+  ultradian_break:
+    pattern: Every 90min of focused work
+    action: MANDATORY 15min break
+    
+  wind_down_deep:
+    time: 11:30
+    action: Transition prep, meeting review
+    
+  couple_time_alert:
+    time: 16:45
+    action: 'Time to leave soon' notification
+    
+  sleep_prep:
+    time: 21:30
+    action: Dim lights, start sleep hygiene
+    
+  sleep_enforcement:
+    time: 22:00
+    action: Phone DND, sleep mode on
+
+---
+
+## 🎯 Decision Logic
+
+IF day == Tuesday AND custody == NO:
+  day_type = PEAK_PERFORMANCE
+  
+  IF energy_score >= HIGH:
+    tonal = 60_MIN_FULL_PROGRAM
+    projects = ENABLED
+    
+  IF energy_score == MEDIUM:
+    tonal = 45_MIN_EXPRESS
+    projects = LIGHT_ONLY
+    
+  IF sleep < 6_hours:
+    morning = LATE_START
+    work_window = SHORTENED
+
+---
+
+## 📊 Success Metrics
+
+targets:
+  deep_work_hours: 3.5
+  meetings_percent: <40%
+  energy_score: HIGH
+  couple_time_quality: PROTECTED
+  sleep_hours: 8

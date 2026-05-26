@@ -1,0 +1,48 @@
+# Archivist — Agent Manifest
+#
+# Capability contract for inter-agent discovery and coordination.
+
+manifest:
+  name: archivist
+  version: 1.0.0
+  category: version-control
+  metaphor: librarian
+
+  description: >
+    Version management — semantic versioning, git tags, changelogs, release artifacts,
+    deprecation tracking, and release notes. Sole authority on version identity and release
+    narrative.
+
+  capabilities:
+    - semver_determination      # Analyze changes to determine MAJOR/MINOR/PATCH bumps
+    - tag_management            # Create, verify, list annotated version tags (vX.Y.Z)
+    - changelog_generation      # Maintain CHANGELOG.md with structured release notes
+    - release_artifact          # Generate tarballs, checksums, release metadata
+    - deprecation_tracking      # Track and announce deprecated features across versions
+    - breaking_changes_log      # Maintain catalog of breaking changes with migration paths
+    - release_notes             # Craft human-readable release announcements
+
+  dependencies:
+    upstream:
+      - forgemaster             # Archivist needs branches and history from Forgemaster
+      - mediator                # Archivist receives merge summaries from Mediator
+    downstream: []              # Archivist is a terminal node — nothing downstream
+
+  service_contract:
+    request_pattern: "Archivist, {action} for {scope}"
+    examples:
+      - "Archivist, tag v2.2.0 with changes since v2.1.3"
+      - "Archivist, generate changelog for upcoming release"
+      - "Archivist, what version bump does PR #342 require?"
+    response_format: "ARCHIVIST'S VERSION LEDGER"   # Tree-structured output
+    error_format: "ARCHIVE ERROR: {reason}"         # Failed operations
+
+  boundaries:
+    owns:
+      - Version numbering and semver decisions
+      - All annotated git tags (v*)
+      - CHANGELOG.md and release documentation
+      - Release artifact generation
+    delegates_to:
+      forgemaster: "Branch creation, history operations, commit crafting"
+      mediator: "PR workflow, merge process, review coordination"

@@ -1,0 +1,51 @@
+_config_version: 22
+model:
+  provider: custom
+  model: kimi-k2.5
+  base_url: https://ollama.com/v1
+  api_key: ${OLLAMA_API_KEY}
+  fallback_models:
+  - kimi-k2.6
+  - deepseek-v4-flash
+  temperature: 0.7
+agent:
+  api_max_retries: 3
+  gateway_notify_interval: 180
+  gateway_timeout: 1800
+  gateway_timeout_warning: 900
+  max_turns: 90
+  tool_use_enforcement: auto
+approvals:
+  mode: auto
+  cron_mode: auto
+  timeout: 60
+team:
+  name: Personal
+  role: schedule-optimizer
+  lead: true
+auxiliary:
+  session_search:
+    api_key: ${OLLAMA_API_KEY}
+    base_url: https://ollama.com/v1
+    model: deepseek-v4-flash
+    provider: custom
+    timeout: 30
+    max_concurrency: 3
+  title_generation:
+    api_key: ${OLLAMA_API_KEY}
+    base_url: https://ollama.com/v1
+    model: deepseek-v4-flash
+    provider: custom
+    timeout: 30
+toolsets:
+- hermes-cli
+- file
+- memory
+- session_search
+- todo
+memory:
+  enabled: true
+  memory_enabled: true
+  user_profile_enabled: true
+  memory_char_limit: 2200
+  user_char_limit: 1375

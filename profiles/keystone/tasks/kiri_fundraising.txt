@@ -1,0 +1,55 @@
+Create comprehensive startup fundraising and co-founder recruitment strategy for Kiri (solo founder AI orchestration SaaS with working MVP).
+
+PART 1: PRE-SEED/ANGEL FUNDRAISING STRATEGY
+
+INVESTOR LANDSCAPE:
+- Pre-seed VC firms that invest pre-traction (AI/infra focus)
+- Angel networks and AI-focused syndicates
+- Strategic angels (ex-founders of devtools/AI infra)
+- Check sizes: $25K-500K typical
+
+SOLO FOUNDER TACTICS:
+- Overcoming the solo founder objection
+- Advisory board strategy vs co-founder
+- Traction substitutes (design partners, waitlist, technical moat)
+- What pre-seed investors actually want to see
+
+PITCH OPTIMIZATION:
+- Lead with multi-model moat, not knowledge graph
+- Address 62% gross margin (not inflated 80%)
+- Target: 5 enterprise design partners with LOIs
+- Vision vs traction balance for pre-seed
+
+PART 2: CO-FOUNDER RECRUITMENT
+
+WHO TO LOOK FOR:
+- Technical co-founder (AI/infra) vs GTM (enterprise SaaS)
+- Which gap hurts Kiri most right now
+- Ideal: ex-Dust, Moveworks, Adept, AutoGPT, LangChain
+
+WHERE TO FIND THEM:
+- Venture studios (Antler, Pioneer)
+- Founder dating platforms
+- Warm intros vs cold outreach
+- Communities: AI Twitter, Discord, conferences
+
+EQUITY AND STRUCTURE:
+- Splits: 50/50, 60/40, 70/30?
+- Vesting: 4-year, 1-year cliff
+- Red flags in vetting
+- Legal: YC SAFE vs priced round
+
+TIMING DECISION:
+- Find co-founder BEFORE raising? (stronger)
+- Raise solo then recruit? (faster)
+- Pros/cons of each path
+
+DELIVERABLES:
+1. Investor target list (15 firms/angels)
+2. Materials checklist
+3. Timeline for fundraising + founder search
+4. Co-founder job description
+5. Equity template recommendation
+6. Three immediate next actions
+
+Be practical and executable now.

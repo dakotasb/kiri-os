@@ -1,0 +1,113 @@
+# Peak Performance Tuesday - Complete Implementation
+# Monster System v1.0 - Layer 1-5 Active
+
+=== LAYER 1: TEMPORAL (Chronobiology) ===
+
+current_date: Tuesday
+chronobiology:
+  current_phase: PEAK_COGNITIVE
+  window: 08:00-11:30
+  ultradian_cycle: 90min sessions
+  
+timeline:
+  0600: Wake + Tonal (60min full program - strength)
+  0700: Prep + Commute
+  0800: Deep Work Block starts
+  0830-0900: Peak energy → hardest task
+  0930-0945: 15min break (walk, water, stretch)
+  0945-1115: Second 90min session
+  1115-1200: Admin/wrap
+  1200-1300: Lunch (light)
+  1300-1700: Meetings/collaboration (secondary peak 1500-1700)
+  1700: Leave office
+  1730: Home → Couple time (protected)
+  1900+: Personal / recovery
+  2200: Sleep
+
+=== LAYER 2: PERSONAL CONTEXT ===
+
+context:
+  custody_today: NO
+  work_location: OFFICE
+  can_stay_late: YES (until 1700)
+  commute: Train 0715-0800, 1700-1730
+  spouse_home: 1730 (protected time starts)
+  tonoal_available: YES (60min allowed)
+  energy_state: HIGH (peak day)
+
+=== LAYER 3: TASKS (No Kid Day = Full Capacity) ===
+
+work_tasks:
+  deep_work: 3.5 hours (0800-1130)
+  meetings: Afternoon only
+  strategic_thinking: 1500-1700 slot
+
+home_tasks:
+  tonoal: MUST complete 60min before work (0600-0700)
+  plants: Optional Wed/Sat
+  trash: NO (Sunday only)
+  pets: Morning/evening routine
+
+projects:
+  status: ENABLED
+  recommended: Smart Home / Shed planning
+  window: 1900-2100 if energy HIGH
+
+=== LAYER 4: OPTIMIZATION ===
+
+day_type: PEAK_PERFORMANCE
+optimization_rules:
+  - IF energy > HIGH: Run full Tonal + evening project work
+  - IF meetings > 5: Cancel lowest priority
+  - IF stay_late == TRUE: Leverage 1500-1700 secondary peak
+  - IF sleep < 6hrs: Shorten Tonal to 45min
+
+burnout_protection:
+  - Mandatory 15min break at 0930
+  - Phone DND during deep work (0800-1130)
+  - Couple time is PROTECTED (no work after 1730)
+  - Sleep enforcement at 2200
+
+environmental_adaptation:
+  - Weather: Commute buffer if rain (leave 0710)
+  - Office: Social battery drain - protect energy
+
+=== LAYER 5: ACTION (Shortcuts & Notifications) ===
+
+shortcuts:
+  morning_trigger:
+    time: 0600
+    actions:
+      - Check HRV/energy from Apple Watch
+      - Start "Peak Tuesday Tonal" routine
+      - Send briefing with optimized schedule
+      - Set phone DND (deep work mode)
+      
+  ultradian_break:
+    pattern: Every 90min of focus
+    reminder: "Time for 15min recovery walk"
+    
+  pre_leave:
+    time: 1650
+    action: "Leave in 10min for wife time"
+    
+  evening_wind_down:
+    time: 2130
+    action: "Start pre-sleep routine"
+    
+notifications:
+  morning_briefing: 0600
+  break_reminders: Every 90min
+  couple_time_alert: 1650
+  sleep_prep: 2130
+  sleep_enforcement: 2200
+
+=== SUCCESS METRICS ===
+
+targets:
+  deep_work_hours: 3.5
+  tonoal_minutes: 60
+  couple_time_achieved: YES
+  sleep_hours: 8
+  energy_score: HIGH
+  day_rating: Peak Performance
