@@ -22,7 +22,7 @@ export function AgentStatusCard({ agent, delay = 0 }: AgentStatusCardProps) {
       }}
     >
       <div className="flex items-start justify-between mb-3">
-        <AgentIcon agent={agent} size="md" showPulse={isActive} />
+        <AgentIcon agent={agent} size="md" showPulse={isActive} showDot={false} />
         <span
           className="text-[10px] font-medium px-2 py-1 rounded-full border"
           style={

@@ -15,9 +15,13 @@ interface AgentAvatarProps {
   muted?: boolean;
   /** Override the allowed mouth styles for this agent */
   mouth?: ('smile' | 'laughing' | 'smirk' | 'nervous' | 'sad' | 'surprised')[];
+  /** Override hair style — DiceBear micah hair option names */
+  hair?: string[];
+  /** Override hair color — hex strings without # */
+  hairColor?: string[];
 }
 
-export function AgentAvatar({ seed, accent, size, muted = false, mouth }: AgentAvatarProps) {
+export function AgentAvatar({ seed, accent, size, muted = false, mouth, hair, hairColor }: AgentAvatarProps) {
   const svgString = useMemo(() => {
     const hex = accent.replace('#', '');
     return createAvatar(micah, {
@@ -28,12 +32,15 @@ export function AgentAvatar({ seed, accent, size, muted = false, mouth }: AgentA
       shirtColor: [hex],
       // Happy or neutral only — overridable per agent
       mouth: mouth ?? ['smile', 'laughing', 'smirk'],
+      // Hair overrides (used for Kiri long hair, etc.)
+      ...(hair      && { hair:      hair      as any }),
+      ...(hairColor && { hairColor: hairColor as any }),
       // Gender-neutral: strip all gendered accessories and makeup
       earringProbability: 0,
       eyeShadowProbability: 0,
       facialHairProbability: 0,
     }).toString();
-  }, [seed, accent, size]);
+  }, [seed, accent, size, mouth, hair, hairColor]);
 
   return (
     <div

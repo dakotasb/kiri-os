@@ -1,18 +1,25 @@
 import { Brain, Database, GitBranch, Layers } from 'lucide-react';
 import { agents, fleetStats } from '@/lib/mock-data';
+import { PageHeader } from '@/components/layout/PageHeader';
+
+function MemoryBadge() {
+  return (
+    <span className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-cyan-500/25 bg-cyan-500/08 text-cyan-400 font-medium">
+      <Database size={11} />
+      {fleetStats.memoriesStored.toLocaleString()} entries
+    </span>
+  );
+}
 
 export default function MemPalacePage() {
   return (
-    <div className="p-8 animate-fade-in">
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h1 className="text-xl font-semibold text-tx tracking-tight">Knowledge</h1>
-          <p className="text-sm text-tx-3 mt-0.5">Institutional memory · What your agents know</p>
-        </div>
-        <span className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-cyan-500/25 bg-cyan-500/08 text-cyan-400 font-medium">
-          <Database size={11} />
-          {fleetStats.memoriesStored.toLocaleString()} entries
-        </span>
+    <div className="h-full overflow-y-auto p-8 animate-fade-in">
+      <div className="mb-6">
+        <PageHeader
+          title="Knowledge"
+          subtitle="Institutional memory · What your agents know"
+          action={<MemoryBadge />}
+        />
       </div>
 
       {/* Stats */}

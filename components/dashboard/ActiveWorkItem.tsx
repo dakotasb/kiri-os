@@ -19,7 +19,7 @@ export function ActiveWorkItem({ task, delay = 0 }: ActiveWorkItemProps) {
       className="flex items-center gap-3 py-3 border-b border-border last:border-0 animate-fade-up"
       style={{ animationDelay: `${delay}ms` }}
     >
-      <AgentIcon agent={agent} size="sm" showPulse={false} />
+      <AgentIcon agent={agent} size="sm" showPulse={false} showDot={false} />
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1.5">

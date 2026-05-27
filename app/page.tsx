@@ -1,8 +1,11 @@
 import { AgentRail } from '@/components/companion/AgentRail';
-import { OutcomeCard } from '@/components/companion/OutcomeCard';
 import { ChatInput } from '@/components/companion/ChatInput';
-import { outcomes, tasks } from '@/lib/mock-data';
-import { Clock, CheckCircle2 } from 'lucide-react';
+import { ChatBarWrapper } from '@/components/companion/ChatBarWrapper';
+import { StatCards } from '@/components/companion/StatCards';
+import { ChatBarChips } from '@/components/companion/ChatBarChips';
+import { GoalsRow } from '@/components/companion/GoalsRow';
+import { tasks } from '@/lib/mock-data';
+import { Clock, CheckCircle2, Target } from 'lucide-react';
 
 export default function CompanionPage() {
   const activeTasks = tasks.filter(t => t.status === 'in-progress');
@@ -10,7 +13,8 @@ export default function CompanionPage() {
 
   return (
     <div className="flex flex-col h-full relative">
-      {/* Top status bar */}
+
+      {/* ── Top status bar ── */}
       <div className="flex items-center justify-between px-8 pt-6 pb-0 shrink-0">
         <div>
           <p className="text-2xl font-semibold text-tx tracking-tight">Good morning, Dakota.</p>
@@ -35,12 +39,11 @@ export default function CompanionPage() {
         </div>
       </div>
 
-      {/* Scrollable content */}
-      <div className="flex-1 overflow-auto px-8 pb-40">
+      {/* ── Scrollable content ── */}
+      <div className="flex-1 overflow-auto px-8 pb-52">
 
-        {/* Agent rail — hero section */}
-        <div className="flex flex-col items-center py-14">
-          {/* Subtle background glow */}
+        {/* Agent rail */}
+        <div className="flex flex-col items-center py-8">
           <div
             className="absolute pointer-events-none"
             style={{
@@ -54,50 +57,32 @@ export default function CompanionPage() {
           <AgentRail />
         </div>
 
-        {/* Quick stats row */}
-        <div className="grid grid-cols-3 gap-3 mb-6 max-w-2xl mx-auto">
-          {[
-            { label: 'Completed today', value: '7 tasks', color: '#10B981' },
-            { label: 'Memories added', value: '14 new', color: '#06B6D4' },
-            { label: 'Hours saved', value: '~4.2 hrs', color: '#6CD9BA' },
-          ].map((stat, i) => (
-            <div
-              key={stat.label}
-              className="rounded-xl border border-border bg-surface px-4 py-3 text-center animate-fade-up"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
-              <p className="text-lg font-semibold" style={{ color: stat.color }}>{stat.value}</p>
-              <p className="text-xs text-tx-3 mt-0.5">{stat.label}</p>
-            </div>
-          ))}
-        </div>
+        <StatCards />
 
-        {/* Recent outcomes */}
+        {/* My Goals */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-tx">Recent outcomes</h2>
+            <div className="flex items-center gap-1.5">
+              <Target size={12} strokeWidth={2} className="text-tx-3" />
+              <h2 className="text-sm font-semibold text-tx">My Goals</h2>
+            </div>
             <div className="flex items-center gap-1 text-xs text-tx-3">
               <CheckCircle2 size={12} strokeWidth={2} className="text-emerald-500" />
               All systems healthy
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            {outcomes.map((outcome, i) => (
-              <OutcomeCard key={outcome.id} outcome={outcome} delay={i * 60} />
-            ))}
-          </div>
+          <GoalsRow />
         </div>
 
       </div>
 
-      {/* Fixed chat bar */}
-      <div
-        className="absolute bottom-0 left-0 right-0 glass border-t border-border"
-        style={{ background: 'var(--chat-bar-bg)' }}
-      >
+      {/* ── Fixed chat bar ── */}
+      <ChatBarWrapper>
+        <ChatBarChips />
         <ChatInput />
-      </div>
+      </ChatBarWrapper>
+
     </div>
   );
 }
