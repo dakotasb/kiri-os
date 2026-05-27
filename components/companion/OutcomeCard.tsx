@@ -43,7 +43,7 @@ export function OutcomeCard({ outcome, delay = 0 }: OutcomeCardProps) {
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-2.5">
-          <AgentIcon agent={agent} size="sm" showPulse={false} />
+          <AgentIcon agent={agent} size="sm" showPulse={false} showDot={false} />
           <div>
             <p className="text-xs text-tx-3 tabular-nums">{agent.name} · {outcome.time}</p>
             <p className="text-sm font-medium text-tx leading-tight mt-0.5">{outcome.title}</p>

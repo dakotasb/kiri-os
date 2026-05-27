@@ -2,35 +2,40 @@ import { FleetHealth } from '@/components/dashboard/FleetHealth';
 import { AgentStatusCard } from '@/components/dashboard/AgentStatusCard';
 import { ActiveWorkItem } from '@/components/dashboard/ActiveWorkItem';
 import { OutcomeCard } from '@/components/companion/OutcomeCard';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { agents, tasks, outcomes } from '@/lib/mock-data';
 import { RefreshCw, Plus } from 'lucide-react';
+
+function DashboardActions() {
+  return (
+    <div className="flex items-center gap-2">
+      <button className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-tx-2 hover:text-tx rounded-lg border border-border hover:border-border-hover hover:bg-white/[0.04] transition-all duration-150">
+        <RefreshCw size={12} strokeWidth={2} />
+        Refresh
+      </button>
+      <button
+        className="flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-150"
+        style={{ background: '#6CD9BA', color: '#13121A', boxShadow: '0 0 16px rgba(108,217,186,0.35)' }}
+      >
+        <Plus size={12} strokeWidth={2.5} />
+        Add Agent
+      </button>
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const activeTasks = tasks.filter(t => t.status === 'in-progress');
   const recentOutcomes = outcomes.slice(0, 3);
 
   return (
-    <div className="p-8 space-y-6 animate-fade-in">
+    <div className="h-full overflow-y-auto p-8 space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-tx tracking-tight">Fleet Dashboard</h1>
-          <p className="text-sm text-tx-3 mt-0.5">Live view of your agent fleet · Updated just now</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-tx-2 hover:text-tx rounded-lg border border-border hover:border-border-hover hover:bg-white/[0.04] transition-all duration-150">
-            <RefreshCw size={12} strokeWidth={2} />
-            Refresh
-          </button>
-          <button
-            className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-white rounded-lg transition-all duration-150"
-            style={{ background: '#8B5CF6', boxShadow: '0 0 16px rgba(139,92,246,0.35)' }}
-          >
-            <Plus size={12} strokeWidth={2.5} />
-            Add Agent
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="Fleet Dashboard"
+        subtitle="Live view of your agent fleet · Updated just now"
+        action={<DashboardActions />}
+      />
 
       {/* Fleet health */}
       <FleetHealth />

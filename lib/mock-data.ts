@@ -1,6 +1,7 @@
-export type AgentStatus = 'active' | 'idle' | 'offline';
-export type TaskStatus = 'todo' | 'in-progress' | 'review' | 'done';
-export type OutcomeType = 'finance' | 'research' | 'build' | 'analysis' | 'review';
+export type AgentStatus   = 'active' | 'idle' | 'offline';
+export type TaskStatus    = 'todo' | 'in-progress' | 'review' | 'done';
+export type OutcomeType   = 'finance' | 'research' | 'build' | 'analysis' | 'review';
+export type AgentActivity = 'thinking' | 'thinking2' | 'responding' | 'responding2' | 'waiting' | 'idle';
 
 export interface Agent {
   id: string;
@@ -18,6 +19,8 @@ export interface Agent {
   categories: string[];
   icon: string;
   capabilities: string[];
+  /** Drives which gif/image is displayed in the orb for agents with custom avatars */
+  activity?: AgentActivity;
 }
 
 export interface Task {
@@ -41,6 +44,7 @@ export interface Outcome {
   time: string;
   summary: string;
   type: OutcomeType;
+  goalId?: string;
 }
 
 export interface Project {
@@ -51,6 +55,16 @@ export interface Project {
   taskCount: number;
   activeCount: number;
   color: string;
+}
+
+export interface Goal {
+  id: string;
+  title: string;
+  progress: number;   // 0–100
+  agentId: string;
+  category: string;
+  metric: string;     // human-readable progress label
+  targetDate: string;
 }
 
 export interface Gateway {
@@ -66,25 +80,27 @@ export const agents: Agent[] = [
     role: 'Orchestrator',
     description: 'Your AI team lead. Understands your goals and dispatches work to the right agents at the right time.',
     longDescription: 'Kiri is the intelligent core of your agent fleet. She learns your context, priorities, and communication style — then coordinates your team of agents to execute on what matters most.',
-    accent: '#8B5CF6',
+    accent: '#6CD9BA',
     status: 'active',
+    activity: 'thinking',
     sessions: 3,
     model: 'deepseek-v4-pro',
     tasksToday: 12,
     memoryEntries: 843,
-    worksWell: ['compass', 'forge', 'atlas', 'mira'],
+    worksWell: ['horizon', 'forge', 'ledger', 'mira'],
     categories: ['Core'],
     icon: 'Sparkles',
     capabilities: ['Task orchestration', 'Agent dispatch', 'Priority management', 'Context learning'],
   },
   {
-    id: 'compass',
-    name: 'Compass',
+    id: 'horizon',
+    name: 'Horizon',
     role: 'Research',
     description: 'Deep research on any topic. Delivers structured briefs, competitive analysis, and market intelligence.',
-    longDescription: 'Compass is your dedicated research agent. Assign it a topic and receive a thorough, structured brief with sources. Ideal for market research, competitive analysis, and technical deep-dives.',
-    accent: '#06B6D4',
+    longDescription: 'Horizon is your dedicated research agent. Assign it a topic and receive a thorough, structured brief with sources. Ideal for market research, competitive analysis, and technical deep-dives.',
+    accent: '#4227F2',
     status: 'active',
+    activity: 'thinking',
     sessions: 4,
     model: 'kimi-k2.5',
     tasksToday: 5,
@@ -102,23 +118,25 @@ export const agents: Agent[] = [
     longDescription: 'Forge is your development agent. It writes clean code, reviews pull requests, generates documentation, and can take entire features from brief to implementation.',
     accent: '#F97316',
     status: 'active',
+    activity: 'thinking',
     sessions: 2,
     model: 'kimi-k2.5',
     tasksToday: 4,
     memoryEntries: 318,
-    worksWell: ['kiri', 'compass', 'beacon'],
+    worksWell: ['kiri', 'horizon', 'beacon'],
     categories: ['Development', 'Business'],
     icon: 'Hammer',
     capabilities: ['Code generation', 'PR review', 'Documentation', 'Architecture design', 'Debugging'],
   },
   {
-    id: 'atlas',
-    name: 'Atlas',
+    id: 'ledger',
+    name: 'Ledger',
     role: 'Finance',
     description: 'Tracks, analyzes, and reports on your financial health. Weekly summaries, alerts, and forecasts.',
-    longDescription: 'Atlas monitors your financial landscape and surfaces what matters. Weekly finance summaries, spending analysis, anomaly alerts, and forward-looking forecasts.',
-    accent: '#10B981',
-    status: 'idle',
+    longDescription: 'Ledger monitors your financial landscape and surfaces what matters. Weekly finance summaries, spending analysis, anomaly alerts, and forward-looking forecasts.',
+    accent: '#16A34A',
+    status: 'active',
+    activity: 'thinking',
     sessions: 0,
     model: 'deepseek-v4-flash',
     tasksToday: 2,
@@ -134,7 +152,7 @@ export const agents: Agent[] = [
     role: 'Life & Calendar',
     description: 'Manages your schedule, reminders, and personal routines. Your AI chief of staff.',
     longDescription: 'Mira keeps your life organized. She manages calendars, sets reminders, tracks personal goals, and learns your routines to proactively surface what you need.',
-    accent: '#EC4899',
+    accent: '#F27EB4',
     status: 'idle',
     sessions: 0,
     model: 'deepseek-v4-flash',
@@ -151,13 +169,13 @@ export const agents: Agent[] = [
     role: 'SME Advisor',
     description: 'Deep domain expertise on demand. Expert-level answers across any field.',
     longDescription: 'Sage is your subject matter expert on demand. Ask about any domain and receive expert-level guidance. Becomes more valuable the more context it accumulates about your work.',
-    accent: '#6366F1',
+    accent: '#B775BF',
     status: 'idle',
     sessions: 0,
     model: 'deepseek-v4-pro',
     tasksToday: 0,
     memoryEntries: 156,
-    worksWell: ['kiri', 'compass', 'atlas'],
+    worksWell: ['kiri', 'horizon', 'ledger'],
     categories: ['Research', 'Business', 'Personal'],
     icon: 'BookOpen',
     capabilities: ['Domain expertise', 'Concept explanation', 'Advisory', 'Decision support', 'Knowledge synthesis'],
@@ -168,8 +186,9 @@ export const agents: Agent[] = [
     role: 'Fitness & Habits',
     description: 'Builds and tracks fitness routines, habits, and personal goals.',
     longDescription: 'Coach designs personalized workout plans, monitors habits, provides accountability check-ins, and adjusts routines based on your progress.',
-    accent: '#EF4444',
-    status: 'offline',
+    accent: '#A60D61',
+    status: 'active',
+    activity: 'waiting',
     sessions: 0,
     model: 'deepseek-v4-flash',
     tasksToday: 0,
@@ -185,13 +204,13 @@ export const agents: Agent[] = [
     role: 'Alerts & Monitoring',
     description: 'Watches what matters and surfaces the right information at the right time.',
     longDescription: 'Beacon is your always-on monitoring agent. It watches the sources you care about, filters noise, and delivers timely, actionable alerts.',
-    accent: '#F59E0B',
+    accent: '#1E18D9',
     status: 'idle',
     sessions: 0,
     model: 'deepseek-v4-flash',
     tasksToday: 3,
     memoryEntries: 201,
-    worksWell: ['kiri', 'atlas', 'forge'],
+    worksWell: ['kiri', 'ledger', 'forge'],
     categories: ['Business', 'Personal', 'Productivity'],
     icon: 'BellRing',
     capabilities: ['Alert monitoring', 'Source watching', 'Signal filtering', 'Notification delivery', 'Threshold tracking'],
@@ -199,26 +218,34 @@ export const agents: Agent[] = [
 ];
 
 export const tasks: Task[] = [
-  { id: 't1', title: 'Q2 Market Research Brief', agentId: 'compass', status: 'in-progress', progress: 67, startedAt: '8m ago', projectId: 'proj-alpha', priority: 'high', tags: ['research', 'Q2'] },
+  { id: 't1', title: 'Q2 Market Research Brief', agentId: 'horizon', status: 'in-progress', progress: 67, startedAt: '8m ago', projectId: 'proj-alpha', priority: 'high', tags: ['research', 'Q2'] },
   { id: 't2', title: 'Auth API Integration', agentId: 'forge', status: 'in-progress', progress: 40, startedAt: '23m ago', projectId: 'proj-alpha', priority: 'high', tags: ['dev', 'auth'] },
-  { id: 't3', title: 'Competitor Feature Matrix', agentId: 'compass', status: 'todo', projectId: 'proj-alpha', priority: 'medium', tags: ['research'] },
+  { id: 't3', title: 'Competitor Feature Matrix', agentId: 'horizon', status: 'todo', projectId: 'proj-alpha', priority: 'medium', tags: ['research'] },
   { id: 't4', title: 'API Documentation Update', agentId: 'forge', status: 'todo', projectId: 'proj-alpha', priority: 'low', tags: ['docs'] },
   { id: 't5', title: 'Onboarding Copy Review', agentId: null, status: 'review', isHumanReview: true, completedAt: '45m ago', projectId: 'proj-alpha', priority: 'medium', tags: ['copy'] },
   { id: 't6', title: 'Q2 Financial Report', agentId: null, status: 'review', isHumanReview: true, completedAt: '5m ago', projectId: 'proj-finance', priority: 'high', tags: ['finance'] },
-  { id: 't7', title: 'Weekly Finance Summary', agentId: 'atlas', status: 'done', completedAt: '12m ago', projectId: 'proj-finance', priority: 'medium' },
+  { id: 't7', title: 'Weekly Finance Summary', agentId: 'ledger', status: 'done', completedAt: '12m ago', projectId: 'proj-finance', priority: 'medium' },
   { id: 't8', title: 'PR Review: feat/auth-flow', agentId: 'forge', status: 'done', completedAt: '1hr ago', projectId: 'proj-alpha', priority: 'high', tags: ['dev'] },
 ];
 
 export const outcomes: Outcome[] = [
-  { id: 'o1', title: 'Weekly Finance Summary', agentId: 'atlas', time: '12m ago', type: 'finance', summary: 'Portfolio up 2.3% this week. 3 bills due in 7 days. Spending 8% below budget. Strong month overall — ahead of target.' },
-  { id: 'o2', title: 'Competitor Analysis: Q2 2026', agentId: 'compass', time: '1hr ago', type: 'analysis', summary: '3 key competitors launched agent features this quarter. Linear, Notion, Monday.com all shipping. Recommendation: accelerate roadmap item #4 — institutional memory.' },
-  { id: 'o3', title: 'PR Review: feat/auth-flow', agentId: 'forge', time: '2hr ago', type: 'review', summary: '2 suggestions added as inline comments. No blocking issues. Implementation is clean. Ready to merge after your sign-off.' },
-  { id: 'o4', title: 'AI Agent Market Brief', agentId: 'compass', time: '3hr ago', type: 'research', summary: 'Autonomous agent market growing 340% YoY. Key gap identified: multi-agent orchestration with institutional memory. No dominant player yet.' },
+  { id: 'o1', title: 'Weekly Finance Summary',    agentId: 'ledger',  time: '12m ago', type: 'finance',  goalId: 'goal-2', summary: 'Portfolio up 2.3% this week. 3 bills due in 7 days. Spending 8% below budget. Strong month overall — ahead of target.' },
+  { id: 'o2', title: 'Competitor Analysis: Q2',   agentId: 'horizon', time: '1hr ago', type: 'analysis', goalId: 'goal-3', summary: '3 key competitors launched agent features this quarter. Linear, Notion, Monday.com all shipping. Recommendation: accelerate roadmap item #4 — institutional memory.' },
+  { id: 'o3', title: 'PR Review: feat/auth-flow', agentId: 'forge',   time: '2hr ago', type: 'review',   goalId: 'goal-4', summary: '2 suggestions added as inline comments. No blocking issues. Implementation is clean. Ready to merge after your sign-off.' },
+  { id: 'o4', title: 'AI Agent Market Brief',     agentId: 'horizon', time: '3hr ago', type: 'research', goalId: 'goal-3', summary: 'Autonomous agent market growing 340% YoY. Key gap identified: multi-agent orchestration with institutional memory. No dominant player yet.' },
+  { id: 'o5', title: 'Habit Check-in: Week 3',    agentId: 'coach',   time: '5hr ago', type: 'review',   goalId: 'goal-1', summary: 'Streak active — 3 days logged this week. Workout plan on track. Rest day flagged for tomorrow based on recovery pattern.' },
+];
+
+export const goals: Goal[] = [
+  { id: 'goal-1', title: 'Get in better shape', progress: 34, agentId: 'coach',   category: 'Health',   metric: '3 workouts / week', targetDate: 'Dec 2026' },
+  { id: 'goal-2', title: 'Save $5K',            progress: 61, agentId: 'ledger',  category: 'Finance',  metric: '$3,050 of $5,000',  targetDate: 'Dec 2026' },
+  { id: 'goal-3', title: 'Win the market',       progress: 48, agentId: 'horizon', category: 'Growth',   metric: 'Q2 intel on track', targetDate: 'Jun 2026' },
+  { id: 'goal-4', title: 'Ship Project Alpha',   progress: 55, agentId: 'forge',   category: 'Build',    metric: '4 of 7 tasks done', targetDate: 'Jul 2026' },
 ];
 
 export const projects: Project[] = [
-  { id: 'proj-alpha', name: 'Project Alpha', description: 'Main product sprint', agentIds: ['kiri', 'compass', 'forge'], taskCount: 7, activeCount: 2, color: '#8B5CF6' },
-  { id: 'proj-finance', name: 'Finance Ops', description: 'Financial monitoring', agentIds: ['kiri', 'atlas', 'beacon'], taskCount: 3, activeCount: 0, color: '#10B981' },
+  { id: 'proj-alpha', name: 'Project Alpha', description: 'Main product sprint', agentIds: ['kiri', 'horizon', 'forge'], taskCount: 7, activeCount: 2, color: '#6CD9BA' },
+  { id: 'proj-finance', name: 'Finance Ops', description: 'Financial monitoring', agentIds: ['kiri', 'ledger', 'beacon'], taskCount: 3, activeCount: 0, color: '#07D98C' },
 ];
 
 export const fleetStats = {
@@ -237,7 +264,7 @@ export const fleetStats = {
 };
 
 export const currentHandoff = {
-  fromAgentId: 'compass',
+  fromAgentId: 'horizon',
   toAgentId: 'forge',
   task: 'Q2 Market Brief → Auth Implementation',
   active: true,

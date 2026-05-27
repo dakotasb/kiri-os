@@ -22,15 +22,15 @@ export function AgentStatusCard({ agent, delay = 0 }: AgentStatusCardProps) {
       }}
     >
       <div className="flex items-start justify-between mb-3">
-        <AgentIcon agent={agent} size="md" showPulse={isActive} />
+        <AgentIcon agent={agent} size="md" showPulse={isActive} showDot={false} />
         <span
           className="text-[10px] font-medium px-2 py-1 rounded-full border"
           style={
             isActive
               ? { color: '#10B981', background: 'rgba(16,185,129,0.08)', borderColor: 'rgba(16,185,129,0.2)' }
               : isOffline
-              ? { color: '#4A4A6A', background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.05)' }
-              : { color: '#7A7A9A', background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.07)' }
+              ? { color: 'var(--tx3)', background: 'var(--badge-off-bg)', borderColor: 'var(--badge-off-border)' }
+              : { color: 'var(--tx2)', background: 'var(--badge-idle-bg)', borderColor: 'var(--badge-idle-border)' }
           }
         >
           {isActive ? 'Active' : isOffline ? 'Offline' : 'Ready'}

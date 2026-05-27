@@ -47,8 +47,8 @@ export function FleetHealth() {
             <span
               className="w-1.5 h-1.5 rounded-full"
               style={{
-                background: gw.status === 'healthy' ? '#10B981' : '#EF4444',
-                boxShadow: gw.status === 'healthy' ? '0 0 6px rgba(16,185,129,0.8)' : 'none',
+                background: gw.status === 'healthy' ? '#6CD9BA' : '#EF4444',
+                boxShadow: gw.status === 'healthy' ? '0 0 6px rgba(108,217,186,0.9)' : 'none',
               }}
             />
             <span className="text-tx-2">{gw.name}</span>
@@ -73,7 +73,7 @@ export function FleetHealth() {
           label="Tasks / Hour"
           value={fleetStats.tasksPerHour}
           sub="across all agents"
-          color="#8B5CF6"
+          color="#6CD9BA"
           delay={50}
         />
         <StatCard
@@ -81,7 +81,7 @@ export function FleetHealth() {
           label="Memories Stored"
           value={fleetStats.memoriesStored.toLocaleString()}
           sub="in MemPalace"
-          color="#06B6D4"
+          color="#B775BF"
           delay={100}
         />
         <StatCard

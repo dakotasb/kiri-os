@@ -2,25 +2,120 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════
+   THEME VARIABLES
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Dark (default) — obsidian/slate canvas, no purple in surfaces ── */
 :root {
-  --bg: #0A0A0F;
-  --surface: #111118;
-  --s1: #181825;
-  --border: #252530;
+  /* Space-separated RGB triplets — lets Tailwind opacity modifiers work.
+     Surfaces are true neutral-dark slate. All hue lives in the accents. */
+  --t-bg:           11  11  14;   /* #0B0B0E — near-black obsidian        */
+  --t-surface:      18  18  22;   /* #121216 — dark slate card             */
+  --t-s1:           24  24  30;   /* #18181E — elevated panel              */
+  --t-s2:           32  32  40;   /* #202028 — highest elevation           */
+  --t-border:       38  38  48;   /* #262630 — subtle separator            */
+  --t-border-hover: 54  54  68;   /* #363644 — hover border                */
+  --t-tx:          234 234 242;   /* #EAEAF2 — near-white, faint cool cast */
+  --t-tx2:         130 130 148;   /* #828294 — mid gray                    */
+  --t-tx3:         102 102 120;   /* #666678 — readable ancillary gray     */
+  --t-kiri:        108 217 186;   /* #6CD9BA — mint teal hero              */
+  --t-warm:        242 126 180;   /* #F27EB4 — soft pink                   */
+  --t-warm-deep:   166  13  97;   /* #A60D61 — deep magenta                */
+  --t-deep:         63  40 157;   /* #3F289D — deep indigo (accent only)   */
+
+  /* Full hex / rgba — used by body bg, CSS rules, and inline styles */
+  --bg:      #0B0B0E;
+  --surface: #121216;
+  --s1:      #18181E;
+  --border:  #262630;
+  --tx:      #EAEAF2;
+  --tx2:     #828294;
+  --tx3:     #666678;
+  --kiri:    #6CD9BA;
+  --warm:    #F27EB4;
+
+  /* Adaptive overlay tints (white in dark, black in light) */
+  --ov-xs: rgba(255,255,255,0.03);
+  --ov-sm: rgba(255,255,255,0.05);
+  --ov-md: rgba(255,255,255,0.08);
+
+  /* Component-specific semantic vars */
+  --chat-bar-bg:        rgba(11,11,14,0.92);
+  --input-bg:           #121216;
+  --input-border:       #2A2A36;
+  --status-dot-offline: #2A2A36;
+  --badge-idle-bg:      rgba(255,255,255,0.04);
+  --badge-idle-border:  rgba(255,255,255,0.07);
+  --badge-off-bg:       rgba(255,255,255,0.03);
+  --badge-off-border:   rgba(255,255,255,0.05);
+  --connector-line:     rgba(255,255,255,0.07);
+  --tag-border:         rgba(255,255,255,0.06);
+  --tag-bg:             rgba(255,255,255,0.03);
+  --progress-track:     rgba(255,255,255,0.06);
+  --shadow-card:        0 1px 3px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+  --shadow-card-hover:  0 4px 20px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* ── Light (ivory) ── */
+[data-theme="light"] {
+  --t-bg:           250 248 244;
+  --t-surface:      255 255 255;
+  --t-s1:           244 240 232;
+  --t-s2:           237 232 220;
+  --t-border:       228 221 208;
+  --t-border-hover: 212 202 184;
+  --t-tx:            26  24  40;
+  --t-tx2:           92  87 117;
+  --t-tx3:          153 148 168;
+  --t-kiri:          24 184 147;
+  --t-warm:         212  94 143;
+  --t-warm-deep:    166  13  97;
+  --t-deep:          63  40 157;
+
+  --bg:      #FAF8F4;
+  --surface: #FFFFFF;
+  --s1:      #F4F0E8;
+  --border:  #E4DDD0;
+  --tx:      #1A1828;
+  --tx2:     #5C5775;
+  --tx3:     #9994A8;
+  --kiri:    #18B893;
+  --warm:    #D45E8F;
+
+  --ov-xs: rgba(0,0,0,0.03);
+  --ov-sm: rgba(0,0,0,0.05);
+  --ov-md: rgba(0,0,0,0.06);
+
+  --chat-bar-bg:        rgba(250,248,244,0.92);
+  --input-bg:           #FFFFFF;
+  --input-border:       #E4DDD0;
+  --status-dot-offline: #D4CFC6;
+  --badge-idle-bg:      rgba(0,0,0,0.04);
+  --badge-idle-border:  rgba(0,0,0,0.07);
+  --badge-off-bg:       rgba(0,0,0,0.03);
+  --badge-off-border:   rgba(0,0,0,0.07);
+  --connector-line:     rgba(0,0,0,0.08);
+  --tag-border:         rgba(0,0,0,0.08);
+  --tag-bg:             rgba(0,0,0,0.03);
+  --progress-track:     rgba(0,0,0,0.06);
+  --shadow-card:        0 1px 4px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.06);
+  --shadow-card-hover:  0 4px 16px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.08);
 }
+
+/* ═══════════════════════════════════════════════════════
+   BASE
+   ═══════════════════════════════════════════════════════ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   height: 100%;
   background: var(--bg);
-  color: #EEEEFA;
+  color: var(--tx);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background 0.2s ease, color 0.15s ease;
 }
 
 /* Scrollbar */
@@ -29,46 +124,72 @@ html, body {
 ::-webkit-scrollbar-thumb { background: #353548; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: #454560; }
 
-/* Agent pulse rings */
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #C8C2B8; }
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #A89E94; }
+
+/* ═══════════════════════════════════════════════════════
+   KEYFRAMES
+   ═══════════════════════════════════════════════════════ */
+
 @keyframes pulse-ring {
-  0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(2.2); opacity: 0; }
+  0%   { transform: scale(1);   opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
 }
 
 @keyframes pulse-ring-2 {
-  0% { transform: scale(1); opacity: 0.5; }
-  100% { transform: scale(1.7); opacity: 0; }
+  0%   { transform: scale(1);   opacity: 0.5; }
+  100% { transform: scale(1.3); opacity: 0; }
 }
 
-/* Particle traveling along rail */
 @keyframes particle-travel {
-  0%   { left: 0; opacity: 0; }
+  0%   { left: 0;                  opacity: 0; }
   8%   { opacity: 1; }
   92%  { opacity: 1; }
-  100% { left: calc(100% - 6px); opacity: 0; }
+  100% { left: calc(100% - 6px);   opacity: 0; }
 }
 
-/* Card entrance */
 @keyframes card-in {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.animate-particle {
-  animation: particle-travel 1.6s ease-in-out infinite;
+@keyframes progress-fill {
+  from { width: 0%; }
+  to   { width: var(--progress); }
 }
 
-.animate-pulse-ring {
-  animation: pulse-ring 2s ease-out infinite;
-}
+.animate-particle    { animation: particle-travel 1.6s ease-in-out infinite; }
 
-.animate-pulse-ring-2 {
-  animation: pulse-ring-2 2s ease-out 0.7s infinite;
+@keyframes line-glow-sweep {
+  0%   { transform: translateX(-100%); opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { transform: translateX(300%); opacity: 0; }
 }
+.animate-line-sweep  { animation: line-glow-sweep 1.8s ease-in-out infinite; }
+.animate-pulse-ring  { animation: pulse-ring 2s ease-out infinite; }
+.animate-pulse-ring-2 { animation: pulse-ring-2 2s ease-out 0.7s infinite; }
+.progress-animated   { animation: progress-fill 1s ease-out both; }
 
-/* Kiri gradient text */
+@keyframes kiri-settle {
+  0%   { transform: scale(1.52); }
+  100% { transform: scale(1.3);  }
+}
+.animate-kiri-settle { animation: kiri-settle 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+/* ═══════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════ */
+
+/* Teal gradient text */
 .kiri-text {
-  background: linear-gradient(135deg, #A78BFA, #818CF8, #6366F1);
+  background: linear-gradient(135deg, #6CD9BA, #4AC9A8, #07D98C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+[data-theme="light"] .kiri-text {
+  background: linear-gradient(135deg, #18B893, #0FA07A, #07C47C);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -80,12 +201,29 @@ html, body {
   -webkit-backdrop-filter: blur(16px) saturate(180%);
 }
 
-/* Progress bar animated fill */
-@keyframes progress-fill {
-  from { width: 0%; }
-  to   { width: var(--progress); }
+/* Hide scrollbar — chip rails, panel threads */
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+/* ═══════════════════════════════════════════════════════
+   LIGHT-MODE OVERRIDES FOR TAILWIND WHITE-ALPHA UTILITIES
+   These classes become invisible on ivory without this fix.
+   ═══════════════════════════════════════════════════════ */
+
+/* Static white-alpha backgrounds */
+[data-theme="light"] .bg-white\/\[0\.03\],
+[data-theme="light"] .bg-white\/\[0\.04\],
+[data-theme="light"] .bg-white\/\[0\.05\],
+[data-theme="light"] .bg-white\/\[0\.06\],
+[data-theme="light"] .bg-white\/\[0\.07\],
+[data-theme="light"] .bg-white\/\[0\.08\] {
+  background-color: var(--ov-xs);
 }
 
-.progress-animated {
-  animation: progress-fill 1s ease-out both;
+/* Hover white-alpha backgrounds */
+[data-theme="light"] .hover\:bg-white\/\[0\.03\]:hover,
+[data-theme="light"] .hover\:bg-white\/\[0\.04\]:hover,
+[data-theme="light"] .hover\:bg-white\/\[0\.05\]:hover,
+[data-theme="light"] .hover\:bg-white\/\[0\.06\]:hover {
+  background-color: var(--ov-sm);
 }

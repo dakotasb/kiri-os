@@ -39,3 +39,21 @@ ui/out/
 **/*.pyo
 profiles/**/.curator_backups/
 profiles/**/.hub/
+
+# local editor / Claude Code config
+.claude/
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

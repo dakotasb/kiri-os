@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { agents } from '@/lib/mock-data';
 import { CatalogCard } from '@/components/catalog/CatalogCard';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { Search, Sparkles } from 'lucide-react';
 
 const CATEGORIES = ['All', 'Personal', 'Research', 'Business', 'Development', 'Finance', 'Health'];
@@ -26,26 +27,24 @@ export default function CatalogPage() {
     : otherAgents;
 
   return (
-    <div className="p-8 animate-fade-in">
+    <div className="h-full overflow-y-auto p-8 animate-fade-in">
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
-        <div>
-          <h1 className="text-xl font-semibold text-tx tracking-tight">Agent Catalog</h1>
-          <p className="text-sm text-tx-3 mt-0.5">
-            {agents.length} agents available · Add any to your fleet
-          </p>
-        </div>
-
-        {/* Search */}
-        <div className="relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-tx-3" strokeWidth={2} />
-          <input
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            placeholder="Search agents…"
-            className="w-56 bg-surface border border-border rounded-lg pl-9 pr-4 py-2 text-sm text-tx placeholder:text-tx-3 outline-none focus:border-kiri/40 transition-colors"
-          />
-        </div>
+      <div className="mb-6">
+        <PageHeader
+          title="Agent Catalog"
+          subtitle={`${agents.length} agents available · Add any to your fleet`}
+          action={
+            <div className="relative">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-tx-3" strokeWidth={2} />
+              <input
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                placeholder="Search agents…"
+                className="w-52 bg-surface border border-border rounded-lg pl-9 pr-4 py-2 text-sm text-tx placeholder:text-tx-3 outline-none focus:border-kiri/40 transition-colors"
+              />
+            </div>
+          }
+        />
       </div>
 
       {/* Category tabs */}
@@ -58,7 +57,7 @@ export default function CatalogPage() {
               className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150"
               style={
                 activeCategory === cat
-                  ? { background: 'rgba(139,92,246,0.12)', color: '#A78BFA', border: '1px solid rgba(139,92,246,0.3)' }
+                  ? { background: 'rgba(108,217,186,0.10)', color: '#6CD9BA', border: '1px solid rgba(108,217,186,0.3)' }
                   : { background: 'transparent', color: '#7A7A9A', border: '1px solid transparent' }
               }
             >

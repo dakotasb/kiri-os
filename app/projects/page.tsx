@@ -84,7 +84,7 @@ export default function ProjectsPage() {
 
           <button
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white rounded-lg transition-all"
-            style={{ background: '#8B5CF6', boxShadow: '0 0 14px rgba(139,92,246,0.3)' }}
+            style={{ background: '#6CD9BA', color: '#13121A', boxShadow: '0 0 14px rgba(108,217,186,0.3)' }}
           >
             <Plus size={12} strokeWidth={2.5} />
             Add Task

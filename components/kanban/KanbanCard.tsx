@@ -22,16 +22,16 @@ export function KanbanCard({ task, delay = 0 }: KanbanCardProps) {
 
   return (
     <div
-      className="rounded-xl border bg-surface p-3.5 cursor-pointer transition-all duration-200 group hover:bg-s1 animate-fade-up"
+      className="rounded-xl border bg-surface p-3.5 cursor-pointer transition-all duration-200 group hover:bg-s1 shadow-card hover:shadow-card-hover animate-fade-up"
       style={{
         animationDelay: `${delay}ms`,
-        borderColor: isReview ? 'rgba(245,158,11,0.4)' : '#252530',
-        boxShadow: isReview ? '0 0 18px rgba(245,158,11,0.1), 0 0 0 1px rgba(245,158,11,0.15)' : 'none',
+        borderColor: isReview ? 'rgba(242,126,180,0.45)' : 'var(--border)',
+        boxShadow: isReview ? '0 0 20px rgba(242,126,180,0.12), 0 0 0 1px rgba(242,126,180,0.2)' : undefined,
       }}
     >
       {/* Human review banner */}
       {isReview && (
-        <div className="flex items-center gap-1.5 text-[11px] font-medium text-amber-400 mb-2.5 -mt-0.5">
+        <div className="flex items-center gap-1.5 text-[11px] font-medium mb-2.5 -mt-0.5" style={{ color: '#F27EB4' }}>
           <AlertCircle size={11} strokeWidth={2.5} />
           Needs your review
         </div>
@@ -47,7 +47,7 @@ export function KanbanCard({ task, delay = 0 }: KanbanCardProps) {
             <span
               key={tag}
               className="text-[10px] px-1.5 py-0.5 rounded border"
-              style={{ color: '#5A5A7A', borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.03)' }}
+              style={{ color: 'var(--tx2)', borderColor: 'var(--tag-border)', background: 'var(--tag-bg)' }}
             >
               {tag}
             </span>
@@ -58,7 +58,7 @@ export function KanbanCard({ task, delay = 0 }: KanbanCardProps) {
       {/* Progress bar (in-progress only) */}
       {task.status === 'in-progress' && task.progress !== undefined && agent && (
         <div className="mb-2.5">
-          <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
+          <div className="h-1 rounded-full overflow-hidden" style={{ background: 'var(--progress-track)' }}>
             <div
               className="h-full rounded-full"
               style={{
@@ -93,8 +93,11 @@ export function KanbanCard({ task, delay = 0 }: KanbanCardProps) {
           {agent ? (
             <AgentIcon agent={agent} size="xs" showPulse={false} />
           ) : isReview ? (
-            <div className="w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/25 flex items-center justify-center">
-              <User size={11} style={{ color: '#F59E0B' }} />
+            <div
+              className="w-6 h-6 rounded-full flex items-center justify-center"
+              style={{ background: 'rgba(242,126,180,0.1)', border: '1px solid rgba(242,126,180,0.28)' }}
+            >
+              <User size={11} style={{ color: '#F27EB4' }} />
             </div>
           ) : null}
         </div>
