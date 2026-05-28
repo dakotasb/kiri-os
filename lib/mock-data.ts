@@ -21,6 +21,8 @@ export interface Agent {
   capabilities: string[];
   /** Drives which gif/image is displayed in the orb for agents with custom avatars */
   activity?: AgentActivity;
+  /** One-line status shown under name in the agent rail — what the agent is currently doing */
+  currentTask?: string;
 }
 
 export interface Task {
@@ -91,6 +93,7 @@ export const agents: Agent[] = [
     categories: ['Core'],
     icon: 'Sparkles',
     capabilities: ['Task orchestration', 'Agent dispatch', 'Priority management', 'Context learning'],
+    currentTask: 'Coordinating Q2 research pipeline',
   },
   {
     id: 'horizon',
@@ -109,6 +112,7 @@ export const agents: Agent[] = [
     categories: ['Research', 'Business'],
     icon: 'Compass',
     capabilities: ['Market research', 'Competitive analysis', 'Technical research', 'Summarization', 'Source tracking'],
+    currentTask: 'Market brief · 67% done',
   },
   {
     id: 'forge',
@@ -127,6 +131,7 @@ export const agents: Agent[] = [
     categories: ['Development', 'Business'],
     icon: 'Hammer',
     capabilities: ['Code generation', 'PR review', 'Documentation', 'Architecture design', 'Debugging'],
+    currentTask: 'Auth API integration · 40%',
   },
   {
     id: 'ledger',
@@ -145,6 +150,7 @@ export const agents: Agent[] = [
     categories: ['Finance', 'Personal'],
     icon: 'TrendingUp',
     capabilities: ['Financial reporting', 'Spending analysis', 'Budget tracking', 'Forecasting', 'Alert monitoring'],
+    currentTask: 'Finance summary delivered',
   },
   {
     id: 'mira',
@@ -197,6 +203,7 @@ export const agents: Agent[] = [
     categories: ['Personal', 'Health'],
     icon: 'Target',
     capabilities: ['Workout planning', 'Habit tracking', 'Progress monitoring', 'Accountability', 'Goal setting'],
+    currentTask: 'Habit check-in pending',
   },
   {
     id: 'beacon',

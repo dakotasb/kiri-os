@@ -1,17 +1,25 @@
 'use client';
 
-import { Task, getAgent } from '@/lib/mock-data';
+import { getAgent } from '@/lib/mock-data';
 import { AgentIcon } from '@/components/ui/AgentIcon';
 import { hexToRgba } from '@/lib/utils';
 import { Clock } from 'lucide-react';
 
+/** Accepts both mock Task (agentId) and LiveTask (assignee) shapes */
 interface ActiveWorkItemProps {
-  task: Task;
+  task: {
+    title: string;
+    agentId?: string | null;
+    assignee?: string | null;
+    progress?: number;
+    startedAt?: string | null;
+  };
   delay?: number;
 }
 
 export function ActiveWorkItem({ task, delay = 0 }: ActiveWorkItemProps) {
-  const agent = task.agentId ? getAgent(task.agentId) : null;
+  const agentId = task.agentId ?? task.assignee ?? null;
+  const agent   = agentId ? getAgent(agentId) : null;
   if (!agent) return null;
 
   return (

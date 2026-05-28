@@ -2,6 +2,8 @@
 
 import { Activity, Zap, Database, Cpu } from 'lucide-react';
 import { fleetStats } from '@/lib/mock-data';
+import { useStats } from '@/hooks/useStats';
+import { useSystemHealth } from '@/hooks/useSystemHealth';
 
 interface StatCardProps {
   icon: React.ElementType;
@@ -34,12 +36,22 @@ function StatCard({ icon: Icon, label, value, sub, color, delay = 0 }: StatCardP
 }
 
 export function FleetHealth() {
+  const { data: stats }  = useStats();
+  const { data: health } = useSystemHealth();
+
+  const activeAgents  = stats?.activeAgents  ?? fleetStats.activeAgents;
+  const tasksPerHour  = stats?.tasksPerHour  ?? fleetStats.tasksPerHour;
+  const memoriesStored = stats?.memoriesStored ?? fleetStats.memoriesStored;
+  const totalErrors   = stats?.totalErrors   ?? fleetStats.totalErrors;
+  const uptimePct     = stats?.uptimePercent ?? fleetStats.uptimePercent;
+  const gateways      = health?.gateways     ?? fleetStats.gateways;
+
   return (
     <div>
       {/* Gateway chips */}
       <div className="flex items-center gap-2 mb-4">
         <span className="text-xs text-tx-3 font-medium">Gateways</span>
-        {fleetStats.gateways.map(gw => (
+        {gateways.map(gw => (
           <span
             key={gw.name}
             className="flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-1 rounded-full border border-border bg-s1"
@@ -55,7 +67,7 @@ export function FleetHealth() {
             <span className="text-tx-3">{gw.sessions}s</span>
           </span>
         ))}
-        <span className="ml-auto text-xs text-tx-3 font-mono">{fleetStats.uptimePercent}% uptime</span>
+        <span className="ml-auto text-xs text-tx-3 font-mono">{uptimePct}% uptime</span>
       </div>
 
       {/* Stat cards */}
@@ -63,15 +75,15 @@ export function FleetHealth() {
         <StatCard
           icon={Activity}
           label="Active Agents"
-          value={fleetStats.activeAgents}
-          sub={`${fleetStats.idleAgents} idle · ${fleetStats.offlineAgents} offline`}
+          value={activeAgents}
+          sub={`${stats ? stats.tasksByStatus['ready'] ?? 0 : fleetStats.idleAgents} idle`}
           color="#10B981"
           delay={0}
         />
         <StatCard
           icon={Zap}
           label="Tasks / Hour"
-          value={fleetStats.tasksPerHour}
+          value={tasksPerHour}
           sub="across all agents"
           color="#6CD9BA"
           delay={50}
@@ -79,7 +91,7 @@ export function FleetHealth() {
         <StatCard
           icon={Database}
           label="Memories Stored"
-          value={fleetStats.memoriesStored.toLocaleString()}
+          value={memoriesStored.toLocaleString()}
           sub="in MemPalace"
           color="#B775BF"
           delay={100}
@@ -87,7 +99,7 @@ export function FleetHealth() {
         <StatCard
           icon={Cpu}
           label="Total Errors"
-          value={fleetStats.totalErrors}
+          value={totalErrors}
           sub="last 24 hours"
           color="#10B981"
           delay={150}

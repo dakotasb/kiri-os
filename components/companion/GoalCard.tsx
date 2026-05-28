@@ -162,7 +162,7 @@ export function GoalCard({ goal, outcomes, defaultOpen = true, delay = 0, isNew 
       >
         <div className="px-4 pb-4 border-t border-border">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-tx-3 mt-3 mb-3">
-            Recent Outcomes
+            Outcomes
           </p>
 
           {outcomes.length > 0 ? (

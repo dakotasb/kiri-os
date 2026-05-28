@@ -1,0 +1,151 @@
+# docker-compose.yml — Kiri OS Production Stack
+#
+# Minimal install: Kiri Discord bot + MemPalace memory (Qdrant + Neo4j)
+# Personal POC setup (.hermes + tmux gateways) is completely unaffected.
+#
+# Usage:
+#   cp .env.example .env          # fill in secrets
+#   cp -r ~/.hermes/* ./hermes-data/   # seed production Hermes data
+#   docker compose build          # first time only (~5 min)
+#   docker compose up -d          # start everything
+#   docker compose logs -f kiri   # watch Kiri connect to Discord
+#
+# Service map:
+#   kiri-qdrant     :6334  — vector DB
+#   kiri-neo4j      :7575/:7688 — graph DB
+#   kiri-mempalace  :3101  — memory layer
+#   kiri-gateway    (internal) — Hermes/Kiri Discord agent
+#   kiri-api        :4000  — REST API bridge (reads hermes-data)
+#   kiri-dashboard  :3000  — Kiri OS web UI
+#
+# k3s-ready: all inter-service traffic uses service names on kiri-internal.
+
+networks:
+  kiri-internal:
+    driver: bridge
+
+volumes:
+  qdrant-data:
+  neo4j-data:
+  neo4j-logs:
+
+services:
+
+  # ── Vector DB ──────────────────────────────────────────────────
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: kiri-qdrant
+    restart: unless-stopped
+    networks:
+      - kiri-internal
+    ports:
+      - 127.0.0.1:6334:6333   # offset port — won't conflict with your POC qdrant
+    volumes:
+      - qdrant-data:/qdrant/storage
+
+  # ── Graph DB ───────────────────────────────────────────────────
+  neo4j:
+    image: neo4j:5.26-community
+    container_name: kiri-neo4j
+    restart: unless-stopped
+    networks:
+      - kiri-internal
+    ports:
+      - 127.0.0.1:7575:7474   # offset — won't conflict with POC neo4j
+      - 127.0.0.1:7688:7687
+    environment:
+      - NEO4J_AUTH=neo4j/mempalace
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+    healthcheck:
+      test: [CMD, wget, -qO-, http://localhost:7474]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── MemPalace ──────────────────────────────────────────────────
+  mempalace:
+    build:
+      context: /home/dakotasb/mempalace/src
+    image: mempalace:prod
+    container_name: kiri-mempalace
+    restart: unless-stopped
+    networks:
+      - kiri-internal
+    ports:
+      - 127.0.0.1:3101:3100   # offset — POC mempalace is on 3100
+    environment:
+      - QDRANT_URL=http://qdrant:6333
+      - NEO4J_URL=bolt://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=mempalace
+    depends_on:
+      neo4j:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+
+  # ── Kiri Gateway ───────────────────────────────────────────────
+  kiri:
+    build:
+      context: /home/dakotasb/hermes-agent
+    image: hermes-agent:prod
+    container_name: kiri-gateway
+    restart: unless-stopped
+    networks:
+      - kiri-internal
+    volumes:
+      - ./hermes-data:/opt/data        # production config, NOT ~/.hermes
+    env_file:
+      - .env
+    environment:
+      - HERMES_UID=1000
+      - HERMES_GID=1000
+      - HERMES_HOME=/opt/data
+    command: [-p, kiri, gateway, run, --replace]
+    depends_on:
+      - mempalace
+
+  # ── Kiri API ───────────────────────────────────────────────────
+  # Reads hermes-data (read-only) and proxies MemPalace.
+  # Dashboard talks to this — never to Hermes internals directly.
+  kiri-api:
+    build:
+      context: ./api
+    image: kiri-api:prod
+    container_name: kiri-api
+    restart: unless-stopped
+    networks:
+      - kiri-internal
+    ports:
+      - 127.0.0.1:4000:4000
+    volumes:
+      - ./hermes-data:/opt/data:ro     # read-only — API never writes to Hermes
+    environment:
+      - HERMES_DATA_DIR=/opt/data
+      - MEMPALACE_URL=http://mempalace:3100
+      - QDRANT_URL=http://qdrant:6333
+      - PORT=4000
+    depends_on:
+      - mempalace
+      - kiri
+
+  # ── Kiri Dashboard ─────────────────────────────────────────────
+  # Stateless Next.js frontend. All Hermes data flows through kiri-api.
+  kiri-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: kiri-dashboard:prod
+    container_name: kiri-dashboard
+    restart: unless-stopped
+    networks:
+      - kiri-internal
+    ports:
+      - 127.0.0.1:3000:3000
+    environment:
+      - HERMES_API_URL=http://kiri-api:4000
+      - NODE_ENV=production
+    depends_on:
+      - kiri-api

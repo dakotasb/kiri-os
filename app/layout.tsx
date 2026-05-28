@@ -5,6 +5,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { ChatPanel } from '@/components/chat/ChatPanel';
 import { ChatTrigger } from '@/components/chat/ChatTrigger';
 import { ChatProvider } from '@/lib/chat-context';
+import { UpdateBanner } from '@/components/shell/UpdateBanner';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -41,8 +42,11 @@ export default function RootLayout({
         <ChatProvider>
           <div className="flex h-screen bg-bg overflow-hidden">
             <Sidebar />
-            <main className="flex-1 min-w-0 overflow-hidden">
-              {children}
+            <main className="flex-1 min-w-0 overflow-hidden flex flex-col">
+              <UpdateBanner />
+              <div className="flex-1 min-h-0 overflow-hidden">
+                {children}
+              </div>
             </main>
             <ChatPanel />
           </div>

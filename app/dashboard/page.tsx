@@ -1,9 +1,13 @@
+'use client';
+
 import { FleetHealth } from '@/components/dashboard/FleetHealth';
 import { AgentStatusCard } from '@/components/dashboard/AgentStatusCard';
 import { ActiveWorkItem } from '@/components/dashboard/ActiveWorkItem';
 import { OutcomeCard } from '@/components/companion/OutcomeCard';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { agents, tasks, outcomes } from '@/lib/mock-data';
+import { agents, outcomes } from '@/lib/mock-data';
+import { useFleet } from '@/hooks/useFleet';
+import { useTasks } from '@/hooks/useTasks';
 import { RefreshCw, Plus } from 'lucide-react';
 
 function DashboardActions() {
@@ -25,7 +29,25 @@ function DashboardActions() {
 }
 
 export default function DashboardPage() {
-  const activeTasks = tasks.filter(t => t.status === 'in-progress');
+  const { data: fleet }        = useFleet();
+  const { tasks: liveTasks }   = useTasks({ status: 'running,ready,blocked' });
+
+  // Merge live operational data on top of the design registry
+  const mergedAgents = agents.map(a => {
+    const live = fleet?.agents.find(l => l.id === a.id);
+    if (!live) return a;
+    return {
+      ...a,
+      status:     live.status,
+      sessions:   live.sessions,
+      tasksToday: live.tasksToday,
+      model:      live.model || a.model,
+    };
+  });
+
+  const activeTasks    = liveTasks.length > 0
+    ? liveTasks.filter(t => t.status === 'in-progress')
+    : [];
   const recentOutcomes = outcomes.slice(0, 3);
 
   return (
@@ -47,7 +69,7 @@ export default function DashboardPage() {
         <div className="col-span-2">
           <h2 className="text-sm font-semibold text-tx mb-3">Agents</h2>
           <div className="grid grid-cols-3 gap-3">
-            {agents.map((agent, i) => (
+            {mergedAgents.map((agent, i) => (
               <AgentStatusCard key={agent.id} agent={agent} delay={i * 50} />
             ))}
           </div>

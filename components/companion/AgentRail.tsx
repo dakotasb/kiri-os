@@ -10,6 +10,7 @@ import { AgentIcon } from '@/components/ui/AgentIcon';
 import { hexToRgba } from '@/lib/utils';
 import { useChatContext } from '@/lib/chat-context';
 import { JOBS, Job } from '@/lib/jobs';
+import { useFleet } from '@/hooks/useFleet';
 
 const MY_AGENTS = ['kiri', 'horizon', 'forge', 'ledger', 'coach'];
 
@@ -30,12 +31,28 @@ function getAgentJobs(agentId: string): Job[] {
 
 export function AgentRail() {
   const { kiriActivity, sendMessage } = useChatContext();
-  const [openAgentId,   setOpenAgentId]   = useState<string | null>(null);
+  const [openAgentId,    setOpenAgentId]    = useState<string | null>(null);
   const [hoveredAgentId, setHoveredAgentId] = useState<string | null>(null);
+  const { data: fleet } = useFleet();
 
-  const myAgents = MY_AGENTS.map(id => getAgent(id)).filter(Boolean) as typeof allAgents;
-  const from     = getAgent(currentHandoff.fromAgentId);
-  const to       = getAgent(currentHandoff.toAgentId);
+  const myAgents = MY_AGENTS
+    .map(id => {
+      const base = getAgent(id);
+      if (!base) return null;
+      const live = fleet?.agents.find(a => a.id === id);
+      if (!live) return base;
+      return {
+        ...base,
+        status:      live.status,
+        sessions:    live.sessions,
+        tasksToday:  live.tasksToday,
+        currentTask: live.runningTask?.title ?? undefined,
+      };
+    })
+    .filter(Boolean) as typeof allAgents;
+
+  const from = getAgent(currentHandoff.fromAgentId);
+  const to   = getAgent(currentHandoff.toAgentId);
 
   /* Close popover on any outside click */
   useEffect(() => {
@@ -62,7 +79,7 @@ export function AgentRail() {
 
               {/* ── Agent orb (clickable) + popover ── */}
               <div
-                className="relative cursor-pointer"
+                className="relative cursor-pointer flex flex-col items-center"
                 style={!isKiri ? { paddingTop: SUB_PAD } : undefined}
                 onMouseEnter={() => setHoveredAgentId(agent.id)}
                 onMouseLeave={() => setHoveredAgentId(null)}
@@ -91,6 +108,19 @@ export function AgentRail() {
                   />
                 </div>
 
+                {/* Status line — in-flow below the icon, brightens on hover/open */}
+                {agent.currentTask && (
+                  <p
+                    className="mt-2 text-[9px] text-center leading-tight pointer-events-none transition-opacity duration-200"
+                    style={{
+                      color: hexToRgba(agent.accent, isActive ? 0.9 : 0.45),
+                      maxWidth: isKiri ? 160 : 88,
+                    }}
+                  >
+                    {agent.currentTask}
+                  </p>
+                )}
+
                 {/* ── Job popover ── */}
                 {isOpen && (
                   <div
@@ -105,6 +135,11 @@ export function AgentRail() {
                       <p className="text-[10px] font-semibold uppercase tracking-widest text-tx-3">
                         {agent.name} · Quick actions
                       </p>
+                      {agent.currentTask && (
+                        <p className="text-[10px] text-tx-3 mt-1 leading-snug" style={{ color: hexToRgba(agent.accent, 0.75) }}>
+                          {agent.currentTask}
+                        </p>
+                      )}
                     </div>
 
                     {jobs.length > 0 ? (

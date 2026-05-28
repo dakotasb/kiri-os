@@ -64,7 +64,7 @@ export default function CompanionPage() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-1.5">
               <Target size={12} strokeWidth={2} className="text-tx-3" />
-              <h2 className="text-sm font-semibold text-tx">My Goals</h2>
+              <h2 className="text-sm font-semibold text-tx">Active Goals</h2>
             </div>
             <div className="flex items-center gap-1 text-xs text-tx-3">
               <CheckCircle2 size={12} strokeWidth={2} className="text-emerald-500" />

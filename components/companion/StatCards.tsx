@@ -1,33 +1,35 @@
 'use client';
 
 import { useChatContext } from '@/lib/chat-context';
-
-const STATS = [
-  {
-    label:  'Completed today',
-    value:  '7 tasks',
-    color:  '#10B981',
-    prompt: 'Give me an end of day wrap-up',
-    hint:   'See today\'s full summary',
-  },
-  {
-    label:  'Memories added',
-    value:  '14 new',
-    color:  '#06B6D4',
-    prompt: 'Catch me up on what happened today',
-    hint:   'Ask Kiri what was captured',
-  },
-  {
-    label:  'Hours saved',
-    value:  '~4.2 hrs',
-    color:  '#6CD9BA',
-    prompt: 'What needs my attention right now?',
-    hint:   'See what needs you next',
-  },
-];
+import { useStats } from '@/hooks/useStats';
 
 export function StatCards() {
   const { sendMessage } = useChatContext();
+  const { data: stats } = useStats();
+
+  const STATS = [
+    {
+      label:  'Completed today',
+      value:  stats ? `${stats.completedToday} tasks` : '— tasks',
+      color:  '#10B981',
+      prompt: 'Give me an end of day wrap-up',
+      hint:   'See today\'s full summary',
+    },
+    {
+      label:  'Memories stored',
+      value:  stats ? stats.memoriesStored.toLocaleString() : '—',
+      color:  '#06B6D4',
+      prompt: 'Catch me up on what happened today',
+      hint:   'Ask Kiri what was captured',
+    },
+    {
+      label:  'Tasks / hour',
+      value:  stats ? `${stats.tasksPerHour}` : '—',
+      color:  '#6CD9BA',
+      prompt: 'What needs my attention right now?',
+      hint:   'See what needs you next',
+    },
+  ];
 
   return (
     <div className="grid grid-cols-3 gap-3 mb-4 max-w-2xl mx-auto">
@@ -41,7 +43,6 @@ export function StatCards() {
             <p className="text-lg font-semibold" style={{ color: stat.color }}>{stat.value}</p>
             <p className="text-xs text-tx-3 mt-0.5">{stat.label}</p>
           </button>
-          {/* Hint floats below — no reserved space inside the card */}
           <p
             className="absolute top-full left-1/2 -translate-x-1/2 mt-1.5 text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-70 transition-opacity duration-200 pointer-events-none"
             style={{ color: stat.color }}

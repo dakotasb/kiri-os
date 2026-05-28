@@ -36,8 +36,8 @@ export function AgentAvatar({ seed, accent, size, muted = false, mouth, hair, ha
       ...(hair      && { hair:      hair      as any }),
       ...(hairColor && { hairColor: hairColor as any }),
       // Gender-neutral: strip all gendered accessories and makeup
-      earringProbability: 0,
-      eyeShadowProbability: 0,
+      earringsProbability:   0,
+      eyeShadowColor:        [] as any,
       facialHairProbability: 0,
     }).toString();
   }, [seed, accent, size, mouth, hair, hairColor]);
