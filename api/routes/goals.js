@@ -3,6 +3,7 @@
 const express  = require('express');
 const router   = express.Router();
 const { getGoalsDb, persistGoalsDb } = require('../lib/goals-db');
+const { stageFact }                  = require('../lib/mempalace');
 
 function rowsToGoals(result) {
   if (!result[0]) return [];
@@ -33,6 +34,18 @@ router.post('/', async (req, res) => {
       [id, title.trim(), agentId ?? null, category ?? null, metric ?? null, targetDate ?? null, Date.now()]
     );
     persistGoalsDb();
+
+    // Sync to MemPalace so suggest_goal skill can find it in future sessions
+    const fact = [
+      `User goal created: "${title.trim()}"`,
+      category  ? `category: ${category}`           : null,
+      agentId   ? `assigned to agent: ${agentId}`   : null,
+      metric    ? `metric: ${metric}`                : null,
+      targetDate? `target date: ${targetDate}`       : null,
+      `dashboard goal ID: ${id}`,
+    ].filter(Boolean).join(', ') + '.';
+    stageFact(fact).catch(err => console.warn('[mempalace] goal sync:', err.message));
+
     res.status(201).json({ id, title: title.trim(), agentId, category, metric, targetDate, progress: 0 });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -40,11 +53,16 @@ router.post('/', async (req, res) => {
 });
 
 router.patch('/:id', async (req, res) => {
-  const { progress } = req.body;
+  const { progress, note } = req.body;
   try {
     const db = await getGoalsDb();
     db.run('UPDATE goals SET progress=? WHERE id=?', [progress ?? 0, req.params.id]);
     persistGoalsDb();
+    // Sync progress update to MemPalace (best-effort)
+    if (note) {
+      stageFact(`Goal progress update (ID: ${req.params.id}): ${note}. New progress: ${progress}%.`)
+        .catch(err => console.warn('[mempalace] progress sync:', err.message));
+    }
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

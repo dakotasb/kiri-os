@@ -154,14 +154,35 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 setKiriActivity('responding');
               } else if (eventName === 'assistant.completed' && payload.content) {
                 const raw = payload.content as string;
-                const goalMatch = raw.match(/<<GOAL:([\s\S]*?)>>/);
-                const cleanText = raw.replace(/\n*<<GOAL:[\s\S]*?>>\n*/, '').trim();
+
+                // Extract structured blocks before displaying
+                const goalMatch   = raw.match(/<<GOAL:([\s\S]*?)>>/);
+                const updateMatch = raw.match(/<<GOAL_UPDATE:([\s\S]*?)>>/);
+                const cleanText   = raw
+                  .replace(/\n*<<GOAL:[\s\S]*?>>\n*/,        '')
+                  .replace(/\n*<<GOAL_UPDATE:[\s\S]*?>>\n*/, '')
+                  .trim();
+
                 accumulated = cleanText;
                 updateMessage(
                   placeholderId,
                   cleanText,
                   goalMatch ? { id: uid(), ...JSON.parse(goalMatch[1]) } as GoalOffer : undefined
                 );
+
+                // Goal progress update — fire PATCH silently, no card shown
+                if (updateMatch) {
+                  try {
+                    const { goalId, progress, note } = JSON.parse(updateMatch[1]);
+                    if (goalId && typeof progress === 'number') {
+                      fetch(`/api/hermes/goals/${goalId}`, {
+                        method:  'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body:    JSON.stringify({ progress, note }),
+                      }).catch(() => {});
+                    }
+                  } catch { /* malformed block — skip */ }
+                }
               } else if (eventName === 'error') {
                 updateMessage(placeholderId, `Error: ${payload.message}`);
               }
