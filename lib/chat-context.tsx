@@ -51,29 +51,6 @@ interface ChatContextType {
 
 function uid() { return Math.random().toString(36).slice(2, 9); }
 
-/* ─── Goal intent detection ──────────────────────────────────────────── */
-
-export function detectGoalIntent(text: string): GoalOffer | null {
-  if (/workout|fitness|shape|exercise|gym|healthy/i.test(text)) {
-    return { id: uid(), title: 'Get in better shape', agentId: 'coach',   category: 'Health',       metric: '3 workouts / week', targetDate: 'Dec 2026' };
-  }
-  if (/read|book|learn|study/i.test(text)) {
-    return { id: uid(), title: 'Read more books',     agentId: 'horizon', category: 'Growth',       metric: '2 books / month',   targetDate: 'Dec 2026' };
-  }
-  if (/productiv|habit|routine|consistent|organized/i.test(text)) {
-    return { id: uid(), title: 'Build better habits', agentId: 'coach',   category: 'Productivity', metric: '5 days / week',     targetDate: 'Dec 2026' };
-  }
-  if (/skill|improve|better at|master/i.test(text)) {
-    return { id: uid(), title: 'Level up my skills',  agentId: 'horizon', category: 'Growth',       metric: 'Track weekly',      targetDate: 'Dec 2026' };
-  }
-  if (/\b(want to|goal|achieve|become|start|build)\b/i.test(text)) {
-    const cleaned = text.replace(/help me|i want to|i.d like to|i need to/gi, '').trim();
-    const title   = (cleaned.charAt(0).toUpperCase() + cleaned.slice(1)).slice(0, 48);
-    return { id: uid(), title: title || 'New goal', agentId: 'kiri', category: 'Personal', metric: 'Track progress', targetDate: 'Dec 2026' };
-  }
-  return null;
-}
-
 /* ─── Context ────────────────────────────────────────────────────────── */
 
 const ChatContext = createContext<ChatContextType | null>(null);
@@ -176,8 +153,15 @@ export function ChatProvider({ children }: { children: ReactNode }) {
                 updateMessage(placeholderId, accumulated);
                 setKiriActivity('responding');
               } else if (eventName === 'assistant.completed' && payload.content) {
-                accumulated = payload.content;
-                updateMessage(placeholderId, accumulated);
+                const raw = payload.content as string;
+                const goalMatch = raw.match(/<<GOAL:([\s\S]*?)>>/);
+                const cleanText = raw.replace(/\n*<<GOAL:[\s\S]*?>>\n*/, '').trim();
+                accumulated = cleanText;
+                updateMessage(
+                  placeholderId,
+                  cleanText,
+                  goalMatch ? { id: uid(), ...JSON.parse(goalMatch[1]) } as GoalOffer : undefined
+                );
               } else if (eventName === 'error') {
                 updateMessage(placeholderId, `Error: ${payload.message}`);
               }
@@ -188,12 +172,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       }
 
       setKiriActivity('idle');
-
-      // Goal detection on completed response
-      if (accumulated) {
-        const offer = detectGoalIntent(accumulated);
-        if (offer) updateMessage(placeholderId, accumulated, offer);
-      }
     } catch {
       updateMessage(placeholderId, 'Connection lost. Check the gateway.');
       setKiriActivity('idle');
