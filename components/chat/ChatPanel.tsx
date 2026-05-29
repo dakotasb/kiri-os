@@ -50,7 +50,7 @@ function JobCard({ job, onInvoke }: { job: Job; onInvoke: (j: Job) => void }) {
 /* ─── ChatPanel ──────────────────────────────────────────────────────── */
 
 export function ChatPanel() {
-  const { isOpen, messages, kiriActivity, closePanel, sendMessage, acceptGoal, declineGoal } = useChatContext();
+  const { isOpen, messages, kiriActivity, kiriOffline, closePanel, sendMessage, acceptGoal, declineGoal } = useChatContext();
   const [input, setInput]     = useState('');
   const [focused, setFocused] = useState(false);
   const bottomRef             = useRef<HTMLDivElement>(null);
@@ -93,7 +93,9 @@ export function ChatPanel() {
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold kiri-text">Kiri</p>
             <p className="text-[11px] text-tx-3">
-              {kiriActivity === 'responding'
+              {kiriOffline
+                ? 'Offline'
+                : kiriActivity === 'responding'
                 ? 'Responding…'
                 : isThinking
                 ? 'Thinking…'
@@ -152,7 +154,7 @@ export function ChatPanel() {
                     {msg.text}
                   </div>
 
-                  {msg.goalOffer && msg.role === 'kiri' && (
+                  {msg.goalOffer && msg.role === 'assistant' && (
                     <div className="w-[85%] mt-1.5">
                       <GoalOfferCard
                         offer={msg.goalOffer}
@@ -214,7 +216,8 @@ export function ChatPanel() {
               onChange={e => setInput(e.target.value)}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
-              placeholder="Ask Kiri…"
+              placeholder={kiriOffline ? 'Gateway offline — check Hermes…' : 'Ask Kiri…'}
+              disabled={kiriOffline}
               className="flex-1 bg-transparent resize-none text-sm text-tx placeholder:text-tx-3 outline-none min-h-[20px] max-h-32 leading-relaxed"
               style={{ fontFamily: 'inherit' }}
               onKeyDown={e => {

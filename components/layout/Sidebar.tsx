@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Sparkles, LayoutDashboard, Package, Columns2,
   Brain, Settings, ChevronRight,
@@ -22,7 +22,8 @@ const NAV = [
 
 export function Sidebar() {
   const path       = usePathname();
-  const { isOpen } = useChatContext();
+  const router     = useRouter();
+  const { isOpen, sendMessage } = useChatContext();
   const collapsed  = isOpen;
 
   const myAgents = agents.filter(a =>
@@ -92,12 +93,18 @@ export function Sidebar() {
         <div className={`flex flex-col ${collapsed ? 'items-center gap-2' : 'gap-1'}`}>
           {myAgents.map(agent => (
             collapsed ? (
-              <div key={agent.id} title={agent.name} className="cursor-pointer">
+              <div
+                key={agent.id}
+                title={agent.name}
+                className="cursor-pointer"
+                onClick={() => sendMessage(`What is ${agent.name} working on right now?`)}
+              >
                 <AgentIcon agent={agent} size="xs" showPulse={agent.status === 'active'} showDot={false} />
               </div>
             ) : (
               <div
                 key={agent.id}
+                onClick={() => sendMessage(`What is ${agent.name} working on right now?`)}
                 className="flex items-center gap-2.5 py-1 px-1 rounded-md hover:bg-white/[0.03] cursor-pointer transition-colors"
               >
                 <AgentIcon agent={agent} size="xs" showPulse={agent.status === 'active'} showDot={false} />
@@ -127,7 +134,11 @@ export function Sidebar() {
           <p className="text-[10px] font-semibold uppercase tracking-widest text-tx-3 mb-2">Teams</p>
           <div className="flex flex-col gap-0.5">
             {projects.map(proj => (
-              <div key={proj.id} className="flex items-center gap-2 px-1 py-1 rounded-md hover:bg-white/[0.03] cursor-pointer transition-colors">
+              <div
+                key={proj.id}
+                onClick={() => router.push(`/projects?project=${proj.id}`)}
+                className="flex items-center gap-2 px-1 py-1 rounded-md hover:bg-white/[0.03] cursor-pointer transition-colors"
+              >
                 <span className="w-2 h-2 rounded-full shrink-0" style={{ background: proj.color }} />
                 <span className="text-xs text-tx-2 truncate">{proj.name}</span>
                 {proj.activeCount > 0 && (
@@ -170,9 +181,12 @@ export function Sidebar() {
             <p className="text-xs font-medium text-tx truncate">Dakota</p>
             <p className="text-[10px] text-tx-3 truncate">Free Plan</p>
           </div>
-          <span className="ml-auto text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0">
+          <button
+            onClick={() => window.open('https://github.com/NousResearch/hermes-agent/releases', '_blank')}
+            className="ml-auto text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 shrink-0 hover:brightness-110 transition-all"
+          >
             Upgrade
-          </span>
+          </button>
         </div>
       )}
     </aside>

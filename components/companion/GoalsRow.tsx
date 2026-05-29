@@ -1,14 +1,28 @@
 'use client';
 
-import { goals as staticGoals, outcomes as allOutcomes } from '@/lib/mock-data';
+import { goals as staticGoals, outcomes as allOutcomes, Goal } from '@/lib/mock-data';
 import { useChatContext } from '@/lib/chat-context';
 import { GoalCard } from '@/components/companion/GoalCard';
+import { useGoals } from '@/hooks/useGoals';
 
 export function GoalsRow() {
-  const { acceptedGoals, latestGoalId } = useChatContext();
+  const { latestGoalId }  = useChatContext();
+  const { data: liveGoals } = useGoals(10_000);
 
-  // Accepted (newest) goals prepended — appear at the top of the grid
-  const allGoals = [...acceptedGoals, ...staticGoals];
+  // Convert live DB goals to mock-compatible shape
+  const liveAsMock: Goal[] = liveGoals.map(g => ({
+    id:         g.id,
+    title:      g.title,
+    progress:   g.progress,
+    agentId:    g.agent_id ?? 'kiri',
+    category:   g.category ?? 'Personal',
+    metric:     g.metric ?? 'Track progress',
+    targetDate: g.target_date ?? 'Dec 2026',
+  }));
+
+  // Live DB goals first, then static fallbacks (deduplicated by id)
+  const liveIds  = new Set(liveAsMock.map(g => g.id));
+  const allGoals = [...liveAsMock, ...staticGoals.filter(g => !liveIds.has(g.id))];
 
   if (allGoals.length === 0) return null;
 

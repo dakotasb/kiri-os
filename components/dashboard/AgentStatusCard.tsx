@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Agent } from '@/lib/mock-data';
 import { AgentIcon } from '@/components/ui/AgentIcon';
 import { hexToRgba } from '@/lib/utils';
@@ -10,11 +11,13 @@ interface AgentStatusCardProps {
 }
 
 export function AgentStatusCard({ agent, delay = 0 }: AgentStatusCardProps) {
-  const isActive = agent.status === 'active';
+  const router    = useRouter();
+  const isActive  = agent.status === 'active';
   const isOffline = agent.status === 'offline';
 
   return (
     <div
+      onClick={() => router.push(`/catalog?agent=${agent.id}`)}
       className="rounded-xl border border-border bg-surface p-4 hover:border-border-hover hover:bg-s1 transition-all duration-200 cursor-pointer group animate-fade-up"
       style={{
         animationDelay: `${delay}ms`,

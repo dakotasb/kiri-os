@@ -7,6 +7,7 @@ const tasks  = require('./routes/tasks');
 const stats  = require('./routes/stats');
 const health = require('./routes/health');
 const kiri   = require('./routes/kiri');
+const goals  = require('./routes/goals');
 
 const PORT = parseInt(process.env.PORT ?? '4000', 10);
 
@@ -24,6 +25,7 @@ app.use('/tasks',  tasks);
 app.use('/stats',  stats);
 app.use('/health', health);
 app.use('/kiri',   kiri);
+app.use('/goals',  goals);
 
 app.get('/', (_req, res) => res.json({ service: 'kiri-api', version: '1.0.0' }));
 
