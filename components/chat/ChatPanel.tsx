@@ -6,6 +6,7 @@ import { useChatContext } from '@/lib/chat-context';
 import { AgentIcon } from '@/components/ui/AgentIcon';
 import { ChipRail } from '@/components/chat/ChipRail';
 import { GoalOfferCard } from '@/components/chat/GoalOfferCard';
+import { MessageText } from '@/components/chat/MessageText';
 import { agents, getAgent } from '@/lib/mock-data';
 import { hexToRgba } from '@/lib/utils';
 import { JOBS, Job } from '@/lib/jobs';
@@ -67,10 +68,16 @@ export function ChatPanel() {
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 310);
   }, [isOpen]);
 
+  function autoResize(el: HTMLTextAreaElement) {
+    el.style.height = 'auto';
+    el.style.height = `${el.scrollHeight}px`;
+  }
+
   function handleSend() {
     if (!input.trim()) return;
     sendMessage(input.trim());
     setInput('');
+    if (inputRef.current) inputRef.current.style.height = 'auto';
   }
 
   function handleJob(job: Job) {
@@ -78,7 +85,7 @@ export function ChatPanel() {
   }
 
   const hasMessages   = messages.length > 0;
-  const isThinking    = hasMessages && kiriActivity === 'thinking' && messages[messages.length - 1]?.role === 'user';
+  const isThinking    = hasMessages && kiriActivity === 'thinking';
 
   return (
     <div
@@ -151,7 +158,21 @@ export function ChatPanel() {
                           }
                     }
                   >
-                    {msg.text}
+                    {msg.role === 'assistant' && !msg.text && isThinking ? (
+                      <div className="flex items-center gap-1.5 py-0.5">
+                        {[0, 1, 2].map(i => (
+                          <span
+                            key={i}
+                            className="inline-block w-1.5 h-1.5 rounded-full animate-typing"
+                            style={{ background: KIRI_COLOR, animationDelay: `${i * 160}ms` }}
+                          />
+                        ))}
+                      </div>
+                    ) : msg.role === 'assistant' ? (
+                      <MessageText text={msg.text} />
+                    ) : (
+                      msg.text
+                    )}
                   </div>
 
                   {msg.goalOffer && msg.role === 'assistant' && (
@@ -165,28 +186,6 @@ export function ChatPanel() {
                   )}
                 </div>
               ))}
-
-              {/* Typing indicator */}
-              {isThinking && (
-                <div className="flex justify-start animate-fade-up">
-                  <div
-                    className="px-4 py-3.5 flex items-center gap-1.5"
-                    style={{
-                      background: 'var(--s1)',
-                      border: '1px solid var(--border)',
-                      borderRadius: '18px 18px 18px 4px',
-                    }}
-                  >
-                    {[0, 1, 2].map(i => (
-                      <span
-                        key={i}
-                        className="w-1.5 h-1.5 rounded-full animate-pulse"
-                        style={{ background: KIRI_COLOR, animationDelay: `${i * 180}ms` }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
 
               <div ref={bottomRef} />
             </div>
@@ -213,12 +212,12 @@ export function ChatPanel() {
               ref={inputRef}
               rows={1}
               value={input}
-              onChange={e => setInput(e.target.value)}
+              onChange={e => { setInput(e.target.value); autoResize(e.target); }}
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               placeholder={kiriOffline ? 'Gateway offline — check Hermes…' : 'Ask Kiri…'}
               disabled={kiriOffline}
-              className="flex-1 bg-transparent resize-none text-sm text-tx placeholder:text-tx-3 outline-none min-h-[20px] max-h-32 leading-relaxed"
+              className="flex-1 bg-transparent resize-none text-sm text-tx placeholder:text-tx-3 outline-none min-h-[20px] max-h-32 leading-relaxed overflow-y-auto"
               style={{ fontFamily: 'inherit' }}
               onKeyDown={e => {
                 if (e.key === 'Enter' && !e.shiftKey) {
