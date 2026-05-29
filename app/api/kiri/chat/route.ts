@@ -1,9 +1,12 @@
 export const runtime = 'edge';
 
-const GATEWAY = process.env.HERMES_GATEWAY_URL ?? 'http://localhost:8642';
+const GATEWAY = process.env.HERMES_GATEWAY_URL;
 const API_KEY  = process.env.HERMES_API_KEY ?? '';
 
 export async function POST(req: Request) {
+  if (!GATEWAY) {
+    return new Response('HERMES_GATEWAY_URL is not set', { status: 503 });
+  }
   try {
     const { message, sessionId } = await req.json();
     if (!sessionId) return new Response('No session', { status: 400 });

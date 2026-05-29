@@ -15,7 +15,7 @@
 | Icons | Lucide React |
 | Fonts | Inter (sans) + JetBrains Mono (mono) via `next/font` |
 | State | React local state only — no global store yet |
-| Data | 100% mock — `lib/mock-data.ts` is the only data source |
+| Data | Hybrid — `lib/mock-data.ts` for agents/tasks/projects; live Hermes API for chat, goals, and fleet health |
 | Repo | `https://github.com/dakotasb/kiri-os` · branch: `design-v2` |
 | Local | `D:\Project Alpha\dashboard-v2` |
 
@@ -243,24 +243,27 @@ hooks/useTheme.ts         — theme toggle logic + localStorage persistence
 
 ---
 
-## Suggested Real-Data Architecture
+## Environment Variables
 
-```
-lib/
-├── mock-data.ts          (keep as fallback / type source)
-├── api.ts                (new — fetch wrappers for Hermes endpoints)
-├── types.ts              (new — extract interfaces from mock-data.ts)
-└── store.ts              (new — Zustand or SWR for real-time agent state)
+Two `.env` files must be configured before the live API features work.
 
-Each page's data source changes from:
-  import { agents } from '@/lib/mock-data'
-to:
-  const { agents } = useAgentStore()   // or useSWR('/api/agents')
-```
+**`D:\Project Alpha\dashboard-v2\.env.local`** — Next.js server-side only (never sent to browser):
 
-Consider SWR for polling-based updates (agent status, task progress)
-and a WebSocket/SSE channel for high-frequency events (handoffs, outcome completions).
+| Variable | Example | Purpose |
+|---|---|---|
+| `HERMES_GATEWAY_URL` | `http://localhost:8642` | Base URL for the Hermes API server; required — routes return 503 if unset |
+| `HERMES_API_KEY` | `localdev` | Bearer token sent as `Authorization: Bearer …` on every Hermes request; must match `API_SERVER_KEY` in the profile `.env` |
+| `NEXT_PUBLIC_HERMES_GATEWAY_URL` | `http://localhost:8642` | Same URL exposed to client-side code (Settings page health-check display) |
+
+**`~/.hermes/profiles/kiri/.env`** — Hermes profile, consumed at gateway launch:
+
+| Variable | Example | Purpose |
+|---|---|---|
+| `API_SERVER_ENABLED` | `true` | Activates the `api_server` platform block in `config.yaml` |
+| `API_SERVER_HOST` | `0.0.0.0` | Bind address — use `0.0.0.0` when the Next.js server runs on the Windows host; `127.0.0.1` for WSL2-only access |
+| `API_SERVER_PORT` | `8642` | Port the API server listens on; must match the port in `HERMES_GATEWAY_URL` |
+| `API_SERVER_KEY` | `localdev` | Bearer token required by the API server; must match `HERMES_API_KEY` in `.env.local` |
 
 ---
 
-*Last updated: 2026-05-24 · UI-only phase complete · Ready for Hermes integration*
+*Last updated: 2026-05-28 · Chat + Goals wired to live Hermes API · Mock data retained for agents/tasks/projects*
