@@ -7,28 +7,32 @@ const { kanbanStats } = require('../lib/db');
 const QDRANT_URL    = process.env.QDRANT_URL    ?? 'http://localhost:6333';
 const MEMPALACE_URL = process.env.MEMPALACE_URL ?? 'http://localhost:3100';
 
+// Known agent IDs — used to filter Qdrant collections that match an agent name
+const AGENT_IDS = ['kiri', 'horizon', 'forge', 'ledger', 'mira', 'sage', 'coach', 'beacon'];
+
 const router = express.Router();
 
 router.get('/', async (_req, res) => {
   try {
-    const [kStats, memoriesStored] = await Promise.all([
-      Promise.resolve(kanbanStats()),
-      fetchTotalMemories().catch(() => null),
+    const [kStats, memoriesResult] = await Promise.all([
+      kanbanStats(),
+      fetchMemories().catch(() => null),
     ]);
 
-    const statusMap = Object.fromEntries(kStats.byStatus.map(r => [r.status, r.count]));
-    const activeAgents = (statusMap.running ?? 0);
+    const statusMap    = Object.fromEntries(kStats.byStatus.map(r => [r.status, r.count]));
+    const activeAgents = statusMap.running ?? 0;
     const tasksPerHour = kStats.completedLastHour;
 
     res.json({
-      timestamp:       new Date().toISOString(),
-      completedToday:  kStats.completedToday,
+      timestamp:        new Date().toISOString(),
+      completedToday:   kStats.completedToday,
       tasksPerHour,
       activeAgents,
-      totalErrors:     kStats.errors,
-      memoriesStored:  memoriesStored ?? 0,
-      uptimePercent:   99.9,
-      tasksByStatus:   statusMap,
+      totalErrors:      kStats.errors,
+      memoriesStored:   memoriesResult?.total ?? 0,
+      memoriesByAgent:  memoriesResult?.byAgent ?? {},
+      uptimePercent:    99.9,
+      tasksByStatus:    statusMap,
     });
   } catch (err) {
     console.error('stats error', err);
@@ -36,24 +40,37 @@ router.get('/', async (_req, res) => {
   }
 });
 
-async function fetchTotalMemories() {
+async function fetchMemories() {
   const collectionsRes = await jsonGet(`${QDRANT_URL}/collections`);
-  const collections = collectionsRes?.result?.collections ?? [];
+  const collections    = collectionsRes?.result?.collections ?? [];
 
-  const counts = await Promise.all(
+  // Fetch each collection's point count in parallel
+  const entries = await Promise.all(
     collections.map(async c => {
-      const col = await jsonGet(`${QDRANT_URL}/collections/${c.name}`).catch(() => null);
-      return col?.result?.points_count ?? 0;
+      const col   = await jsonGet(`${QDRANT_URL}/collections/${c.name}`).catch(() => null);
+      const count = col?.result?.points_count ?? 0;
+      return { name: c.name, count };
     })
   );
-  return counts.reduce((a, b) => a + b, 0);
+
+  const total = entries.reduce((sum, e) => sum + e.count, 0);
+
+  // Build per-agent breakdown: collection name must exactly match a known agent ID
+  const byAgent = {};
+  for (const { name, count } of entries) {
+    if (AGENT_IDS.includes(name) && count > 0) {
+      byAgent[name] = count;
+    }
+  }
+
+  return { total, byAgent };
 }
 
 function jsonGet(url) {
   return new Promise((resolve, reject) => {
     http.get(url, res => {
       let body = '';
-      res.on('data', d => body += d);
+      res.on('data', d => { body += d; });
       res.on('end', () => {
         try { resolve(JSON.parse(body)); } catch { reject(new Error('bad json')); }
       });

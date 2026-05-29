@@ -9,6 +9,7 @@ export interface LiveStats {
   activeAgents: number;
   totalErrors: number;
   memoriesStored: number;
+  memoriesByAgent: Record<string, number>;
   uptimePercent: number;
   tasksByStatus: Record<string, number>;
 }

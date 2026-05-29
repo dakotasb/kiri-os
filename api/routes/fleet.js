@@ -11,8 +11,8 @@ router.get('/', async (_req, res) => {
   try {
     const [profiles, activeRuns, todayCounts, gateways] = await Promise.all([
       Promise.resolve(loadProfiles()),
-      Promise.resolve(activeRunsByAgent()),
-      Promise.resolve(tasksCompletedTodayByAgent()),
+      activeRunsByAgent(),
+      tasksCompletedTodayByAgent(),
       checkGateways(),
     ]);
 

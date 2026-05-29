@@ -1,6 +1,7 @@
 'use client';
 
-import { ExternalLink, Share2, TrendingUp, Search, Code2, BarChart3, FileText } from 'lucide-react';
+import { useState } from 'react';
+import { ExternalLink, Share2, Check, TrendingUp, Search, Code2, BarChart3, FileText } from 'lucide-react';
 import { Outcome, getAgent } from '@/lib/mock-data';
 import { AgentIcon } from '@/components/ui/AgentIcon';
 import { hexToRgba } from '@/lib/utils';
@@ -28,9 +29,18 @@ interface OutcomeCardProps {
 
 export function OutcomeCard({ outcome, delay = 0 }: OutcomeCardProps) {
   const agent = getAgent(outcome.agentId);
+  const [copied, setCopied] = useState(false);
+
   if (!agent) return null;
 
   const TypeIcon = TYPE_ICONS[outcome.type];
+
+  function handleShare() {
+    navigator.clipboard.writeText(`${outcome.title}\n\n${outcome.summary}`).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
 
   return (
     <div
@@ -69,17 +79,19 @@ export function OutcomeCard({ outcome, delay = 0 }: OutcomeCardProps) {
 
       {/* Actions */}
       <div className="flex items-center gap-1 mt-3 pt-3 border-t border-border opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-        <button
+        <a
+          href={`#outcome-${outcome.id}`}
           className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg text-tx-2 hover:text-tx hover:bg-white/[0.06] transition-colors"
         >
           <ExternalLink size={11} />
           Open
-        </button>
+        </a>
         <button
+          onClick={handleShare}
           className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg text-tx-2 hover:text-tx hover:bg-white/[0.06] transition-colors"
         >
-          <Share2 size={11} />
-          Share
+          {copied ? <Check size={11} style={{ color: '#10B981' }} /> : <Share2 size={11} />}
+          {copied ? 'Copied!' : 'Share'}
         </button>
       </div>
     </div>

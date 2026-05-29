@@ -27,15 +27,17 @@ async function requestUpdate(commitCount: number, latestTag: string): Promise<vo
 export function UpdateBanner() {
   const update  = useUpdateAvailable();
   const [dismissed, setDismissed] = useState(false);
-  const [state, setState]         = useState<'idle' | 'sent'>('idle');
+  const [state, setState]         = useState<'idle' | 'inflight' | 'sent'>('idle');
 
   if (!update || dismissed) return null;
 
   const { commitCount, latestTag } = update;
 
   async function handleConfirm() {
-    setState('sent');
+    if (state !== 'idle') return;
+    setState('inflight');
     await requestUpdate(commitCount, latestTag);
+    setState('sent');
   }
 
   return (
@@ -50,7 +52,7 @@ export function UpdateBanner() {
       <GitCommit size={13} strokeWidth={1.8} style={{ color: KIRI_COLOR, flexShrink: 0 }} />
 
       {/* Message */}
-      {state === 'idle' ? (
+      {state === 'idle' || state === 'inflight' ? (
         <>
           <span className="text-tx-2 flex-1 min-w-0">
             <span style={{ color: KIRI_COLOR }} className="font-medium">hermes-agent update available</span>
@@ -63,9 +65,11 @@ export function UpdateBanner() {
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={handleConfirm}
-              className="px-3 py-1 rounded-md text-[11px] font-semibold transition-all duration-150 hover:brightness-110 active:scale-95"
+              disabled={state === 'inflight'}
+              className="px-3 py-1 rounded-md text-[11px] font-semibold transition-all duration-150 hover:brightness-110 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5"
               style={{ background: KIRI_COLOR, color: '#13121A' }}
             >
+              {state === 'inflight' && <RefreshCw size={10} strokeWidth={2} className="animate-spin" />}
               Confirm
             </button>
             <button

@@ -8,7 +8,7 @@ export interface LiveTask {
   title: string;
   assignee: string | null;
   status: 'todo' | 'in-progress' | 'review' | 'done';
-  priority: number;
+  priority: 'low' | 'medium' | 'high';
   progress?: number;
   startedAt: string | null;
   completedAt: string | null;
